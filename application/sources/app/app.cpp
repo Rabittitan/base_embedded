@@ -41,7 +41,7 @@
 #include "task_if.h"
 #include "task_rf24_if.h"
 #include "task_uart_if.h"
-#include "task_display.h"
+// #include "task_display.h"
 #include "task_zigbee.h"
 
 /* sys include */
@@ -52,7 +52,7 @@
 #include "sys_dbg.h"
 
 /* arduino include */
-#include "SPI.h"
+// #include "SPI.h"
 #include "WString.h"
 #include "HardwareSerial.h"
 #include "ArduinoJson.h"
@@ -129,7 +129,7 @@ int main_app() {
 	sys_ctrl_independent_watchdog_init();	/* 32s */
 	sys_ctrl_soft_watchdog_init(200);		/* 20s */
 
-	SPI.begin();
+	//SPI.begin();
 
 	/* adc peripheral configure */
 	io_cfg_adc1();			/* configure adc for thermistor and CT sensor */
@@ -363,7 +363,7 @@ void app_init_state_machine() {
  * used for app tasks
  */
 void app_task_init() {
-	SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
+	//SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
 
 	task_post_pure_msg(AC_TASK_RF24_IF_ID, AC_RF24_IF_INIT_NETWORK);
 	task_post_pure_msg(AC_TASK_UART_IF_ID, AC_UART_IF_INIT);

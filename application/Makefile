@@ -1,6 +1,7 @@
 ##############################################################################
 # @author: GaoKong
 # @date:   05/2/2017
+# @editor: Ported to STM32F103
 ##############################################################################
 #NOTE:
 # Learn Makefiles at https://makefiletutorial.com/
@@ -9,19 +10,14 @@
 # Utilitis define
 Print = @echo "~"
 
-# SOC, flash and RAM info
-SOC_NAME = STM32L151CBT6
-SOC_FLASH_BYTES = 131072 # 128KB
-SOC_SRAM_BYTES = 16384	 # 16KB
-FLASH_BASE_ADDR_VAL = 0x08000000
-
-# Name of build target ex: ak-base-kit-stm32l151-application.bin
-NAME_MODULE = ak-base-kit-stm32l151-application
+# Name of build target đổi từ stm32l151 sang stm32f103
+NAME_MODULE = ak-base-kit-stm32f103-application
 PROJECT = $(NAME_MODULE)
 
-GCC_PATH			= $(HOME)/Workspace/Tools/gcc-arm-none-eabi-10.3-2021.10
-PROGRAMER_PATH		= $(HOME)/workspace/tools/STM32CubeProgrammer/bin
-OPENOCD_CFG_PATH	= /usr/local/share/openocd/scripts/board/stm32ldiscovery.cfg
+GCC_PATH        = /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10
+PROGRAMER_PATH      = /home/rabbit/workspace/Tools/bin
+# Đổi mạch nạp/target debug sang dòng F103 (Ví dụ: stm32f103minimum hoặc bluepill)
+OPENOCD_CFG_PATH    = /usr/local/share/openocd/scripts/board/stm32f103minimum.cfg
 
 # App start address, that need sync with declare in linker file and interrupt vector table.
 APP_START_ADDR_VAL = 0x08003000
@@ -73,46 +69,58 @@ include sources/driver/Makefile.mk
 include sources/libraries/Makefile.mk
 include sources/sys/Makefile.mk
 include sources/networks/Makefile.mk
-include sources/platform/stm32l/Makefile.mk
+# QUAN TRỌNG: Đổi include platform sang stm32f
+include sources/platform/stm32f/Makefile.mk
 
 OBJECTS_DIR = build_$(NAME_MODULE)
 TARGET = $(OBJECTS_DIR)/$(NAME_MODULE).axf
 
-SOURCES		+=
-SOURCES_	 = $(shell find $(SOURCES) -type f -printf "%f\n")
-OBJECTS		+= $(patsubst %.c, $(OBJECTS_DIR)/%.o, $(SOURCES_))
+SOURCES     +=
+OBJECTS := $(SOURCES:%.c=$(OBJECTS_DIR)/%.o)
+OBJECTS += $(SOURCES_CPP:%.cpp=$(OBJECTS_DIR)/%.o)
+OBJECTS += $(SOURCES_ASM:%.s=$(OBJECTS_DIR)/%.o)
 
-SOURCES_CPP	+=
-SOURCES_CPP_	 = $(shell find $(SOURCES_CPP) -type f -printf "%f\n")
-OBJECTS		+= $(patsubst %.cpp, $(OBJECTS_DIR)/%.o, $(SOURCES_CPP_))
+# SOURCES_CPP +=
+# SOURCES_CPP_ = $(shell find $(SOURCES_CPP) -type f -printf "%f\n")
+# OBJECTS     += $(patsubst %.cpp, $(OBJECTS_DIR)/%.o, $(SOURCES_CPP_))
 
-SOURCES_ASM	+=
-SOURCES_ASM_	 = $(shell find $(SOURCES_ASM) -type f -printf "%f\n")
-OBJECTS		+= $(patsubst %.s, $(OBJECTS_DIR)/%.o, $(SOURCES_ASM_))
+# SOURCES_ASM +=
+# SOURCES_ASM_     = $(shell find $(SOURCES_ASM) -type f -printf "%f\n")
+# OBJECTS     += $(patsubst %.s, $(OBJECTS_DIR)/%.o, $(SOURCES_ASM_))
+# Chuyển danh sách thư mục thành danh sách file .cpp (giữ đường dẫn đầy đủ)
 
-LIBC		= $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libc.a
-LIBM		= $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libm.a
-LIBFPU		= $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libg.a
-LIBRDPMON	= $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/librdpmon.a
-LIBSTDCPP_NANO	= $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libstdc++_nano.a
+CPP_SRC_FILES := $(foreach dir,$(SOURCES_CPP),$(wildcard $(dir)/*.cpp))
+OBJECTS += $(CPP_SRC_FILES:%.cpp=$(OBJECTS_DIR)/%.o)
 
-LIBGCC		= $(GCC_PATH)/lib/gcc/arm-none-eabi/10.3.1/thumb/v7-m/nofp/libgcc.a
-LIBGCOV		= $(GCC_PATH)/lib/gcc/arm-none-eabi/10.3.1/thumb/v7-m/nofp/libgcov.a
+# Tương tự với assembly
+ASM_SRC_FILES := $(foreach dir,$(SOURCES_ASM),$(wildcard $(dir)/*.s))
+OBJECTS += $(ASM_SRC_FILES:%.s=$(OBJECTS_DIR)/%.o)
+
+
+# Nhân của cả L1 và F103 đều là Cortex-M3 (ARMv7-M no FPU) nên phần Libs GCC giữ nguyên
+LIBC        = $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libc.a
+LIBM        = $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libm.a
+LIBFPU      = $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libg.a
+LIBRDPMON   = $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/librdpmon.a
+LIBSTDCPP_NANO  = $(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp/libstdc++_nano.a
+
+LIBGCC      = $(GCC_PATH)/lib/gcc/arm-none-eabi/10.3.1/thumb/v7-m/nofp/libgcc.a
+LIBGCOV     = $(GCC_PATH)/lib/gcc/arm-none-eabi/10.3.1/thumb/v7-m/nofp/libgcov.a
 
 LIB_PATH += -L$(GCC_PATH)/arm-none-eabi/lib/thumb/v7-m/nofp
 LIB_PATH += -L$(GCC_PATH)/lib/gcc/arm-none-eabi/10.3.1/thumb/v7-m/nofp
 
 # The command for calling the compiler.
-CC		=	$(GCC_PATH)/bin/arm-none-eabi-gcc
-CPP		=	$(GCC_PATH)/bin/arm-none-eabi-g++
-AR		=	$(GCC_PATH)/bin/arm-none-eabi-ar
-AS		=	$(GCC_PATH)/bin/arm-none-eabi-gcc -x assembler-with-cpp
-LD		=	$(GCC_PATH)/bin/arm-none-eabi-ld
-OBJCOPY		=	$(GCC_PATH)/bin/arm-none-eabi-objcopy
-OBJDUMP		=	$(GCC_PATH)/bin/arm-none-eabi-objdump
-OBJNM		=	$(GCC_PATH)/bin/arm-none-eabi-nm
-ARM_GDB		=	$(GCC_PATH)/bin/arm-none-eabi-gdb-py
-ARM_SIZE	=	$(GCC_PATH)/bin/arm-none-eabi-size
+CC      =   $(GCC_PATH)/bin/arm-none-eabi-gcc
+CPP     =   $(GCC_PATH)/bin/arm-none-eabi-g++
+AR      =   $(GCC_PATH)/bin/arm-none-eabi-ar
+AS      =   $(GCC_PATH)/bin/arm-none-eabi-gcc -x assembler-with-cpp
+LD      =   $(GCC_PATH)/bin/arm-none-eabi-ld
+OBJCOPY     =   $(GCC_PATH)/bin/arm-none-eabi-objcopy
+OBJDUMP     =   $(GCC_PATH)/bin/arm-none-eabi-objdump
+OBJNM       =   $(GCC_PATH)/bin/arm-none-eabi-nm
+ARM_GDB     =   $(GCC_PATH)/bin/arm-none-eabi-gdb-py
+ARM_SIZE    =   $(GCC_PATH)/bin/arm-none-eabi-size
 
 MEMORY_USAGE_BAR_WIDTH = 30
 FLASH_SECTION_FILTER = $$1==".isr_vector" || $$1==".text" || $$1==".ARM.exidx" || $$1==".init_array" || $$1==".fini_array" || $$1==".data"
@@ -157,78 +165,74 @@ CPU = -mthumb -march=armv7-m
 FPU = -mfloat-abi=soft
 
 # Interface option
-IF_OPTION +=	$(IF_LINK_OPTION)		\
-		$(IF_NETWORK_NRF24_OPTION)	\
+IF_OPTION +=    $(IF_LINK_OPTION)       \
+        $(IF_NETWORK_NRF24_OPTION)  \
 
 # App option
-TASK_OPTION +=	$(TASK_ZIGBEE_OPTION)
-TASK_OPTION +=	$(TASK_MBMASTER_OPTION)
+TASK_OPTION +=  $(TASK_ZIGBEE_OPTION)
+TASK_OPTION +=  $(TASK_MBMASTER_OPTION)
 
 # Hardware option
-#Ver 2.1 (Oled 1.3" driver SH1106)
-#Ver 3.0 (Oled 1.54" driver SSD1309)
-
 HARDWARE_OPTION += \
-		-DSSD1309_DRIVER_EN	\
-		-USH1106_DRIVER_EN
+        -DSSD1309_DRIVER_EN \
+        -USH1106_DRIVER_EN
 
 # Console log compile option
-CONSOLE_OPTION +=			\
-		-DLOGIN_PRINT_EN	\
-		-DSYS_PRINT_EN		\
-		-DAPP_PRINT_EN		\
-		-DSYS_DBG_EN		\
-		-DAPP_DBG_EN		\
-		-DAPP_DBG_SIG_EN	\
+CONSOLE_OPTION +=           \
+        -DLOGIN_PRINT_EN    \
+        -DSYS_PRINT_EN      \
+        -DAPP_PRINT_EN      \
+        -DSYS_DBG_EN        \
+        -DAPP_DBG_EN        \
+        -DAPP_DBG_SIG_EN    \
 
-GENERAL_FLAGS +=			\
-		$(RTOS_DEV_OPTION)	\
-		$(CONSOLE_BAUDRATE_DEF)	\
-		$(CONSOLE_OPTION)	\
-		$(IRQ_DEBUG_OPTION)	\
-		$(WARNING_OPTION)	\
-		$(OPTIMIZE_OPTION)	\
-		$(RELEASE_OPTION)	\
-		$(APP_ADDR_OPTION)	\
-		$(USB_OPTION)		\
-		$(IF_OPTION)		\
-		$(TASK_OPTION)		\
-		$(HARDWARE_OPTION)  \
-		-DUSE_STDPERIPH_DRIVER	\
-		-DSTM32L1XX_MD		\
-		-DSTM32L_PLATFORM	\
-		-DUSE_EXTERNAL_FLASH	\
+GENERAL_FLAGS +=            \
+        $(RTOS_DEV_OPTION)  \
+        $(CONSOLE_BAUDRATE_DEF) \
+        $(CONSOLE_OPTION)   \
+        $(IRQ_DEBUG_OPTION) \
+        $(WARNING_OPTION)   \
+        $(OPTIMIZE_OPTION)  \
+        $(RELEASE_OPTION)   \
+        $(APP_ADDR_OPTION)  \
+        $(USB_OPTION)       \
+        $(IF_OPTION)        \
+        $(TASK_OPTION)      \
+        $(HARDWARE_OPTION)  \
+        -DUSE_STDPERIPH_DRIVER  \
+        -DSTM32F10X_MD      \
+        -DSTM32F_PLATFORM   \
+        -DUSE_EXTERNAL_FLASH    \
 
-COMPILER_FLAGS +=			\
-		$(CPU)			\
-		$(FPU)			\
-		-ffunction-sections	\
-		-fdata-sections		\
-		-fstack-usage		\
-		-MD			\
-		-Wall			\
-		-c			\
+COMPILER_FLAGS +=           \
+        $(CPU)          \
+        $(FPU)          \
+        -ffunction-sections \
+        -fdata-sections     \
+        -fstack-usage       \
+        -MD         \
+        -Wall           \
+        -c          \
 
 # C compiler flags
-CFLAGS +=				\
-		$(GENERAL_FLAGS)	\
-		$(COMPILER_FLAGS)	\
-		-std=c99		\
+CFLAGS +=               \
+        $(GENERAL_FLAGS)    \
+        $(COMPILER_FLAGS)   \
+        -std=c99        \
 
 # C++ compiler flags
-CPPFLAGS +=				\
-		$(GENERAL_FLAGS)	\
-		$(COMPILER_FLAGS)	\
-		-std=c++11		\
-		-fno-rtti		\
-		-fno-exceptions		\
-		-fno-use-cxa-atexit	\
-
+CPPFLAGS +=             \
+        $(GENERAL_FLAGS)    \
+        $(COMPILER_FLAGS)   \
+        -std=c++11      \
+        -fno-rtti       \
+        -fno-exceptions     \
+        -fno-use-cxa-atexit \
 # linker flags
-LDFLAGS	=	-Map=$(OBJECTS_DIR)/$(PROJECT).map	\
-		--gc-sections	\
-		$(LIB_PATH)	\
-		$(LIBC) $(LIBM) $(LIBSTDCPP_NANO) $(LIBGCC) $(LIBGCOV) $(LIBFPU) $(LIBRDPMON)
+LDFLAGS =   -Map=$(OBJECTS_DIR)/$(PROJECT).map  \
+        --gc-sections   \
+        $(LIB_PATH) \
+        $(LIBC) $(LIBM) $(LIBSTDCPP_NANO) $(LIBGCC) $(LIBGCOV) $(LIBFPU) $(LIBRDPMON)
 
 all: create $(TARGET) info
 
@@ -246,14 +250,17 @@ $(TARGET): $(OBJECTS) $(LIBC) $(LIBM) $(LIBSTDCPP_NANO) $(LIBGCC) $(LIBGCOV) $(L
 	@$(ARM_SIZE) $(TARGET)
 
 $(OBJECTS_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(Print) CC $@
 	@$(CC) $(CFLAGS) -o $@ $<
 
 $(OBJECTS_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(Print) CXX $@
 	@$(CPP) $(CPPFLAGS) -o $@ $<
 
 $(OBJECTS_DIR)/%.o: %.s
+	@mkdir -p $(dir $@)
 	$(Print) AS $@
 	@$(AS) $(CFLAGS) -o $@ $<
 
@@ -290,13 +297,13 @@ endif
 
 .PHONY: debug
 debug: all
-	xterm -e openocd -f $(OPENOCD_PATH)/tcl/board/stm32ldiscovery.cfg &
+	xterm -e openocd -f $(OPENOCD_PATH)/tcl/board/stm32f103minimum.cfg &
 ifeq ($(gdb),ddd)
 	$(Print) DBG using DDD
-	ddd --debugger $(ARM_GDB) --command=stm32l_init.gdb $(TARGET)
+	ddd --debugger $(ARM_GDB) --command=stm32f_init.gdb $(TARGET)
 else
 	$(Print) DBG GDB
-	$(ARM_GDB) -w --command=stm32l_init.gdb $(TARGET)
+	$(ARM_GDB) -w --command=stm32f_init.gdb $(TARGET)
 endif
 
 .PHONY: clean
@@ -316,4 +323,4 @@ asm: $(TARGET)
 
 sym: $(TARGET)
 	$(Print) export object name $(<:.axf=.sym)
-	$(OBJNM) --size-sort --print-size $(<) >> $(<:.axf=.sym)
+	@$(OBJNM) --size-sort --print-size $(<) >> $(<:.axf=.sym)

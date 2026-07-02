@@ -626,7 +626,7 @@ void RCC_LSICmd(FunctionalState NewState)
 /*******************************************************************************
 * Function Name  : RCC_RTCCLKConfig
 * Description    : Configures the RTC clock (RTCCLK).
-*                  Once the RTC clock is selected it can’t be changed unless the
+*                  Once the RTC clock is selected it canï¿½t be changed unless the
 *                  Backup domain is reset.
 * Input          : - RCC_RTCCLKSource: specifies the RTC clock source.
 *                    This parameter can be one of the following values:
@@ -1075,7 +1075,7 @@ ITStatus RCC_GetITStatus(u8 RCC_IT)
 
 /*******************************************************************************
 * Function Name  : RCC_ClearITPendingBit
-* Description    : Clears the RCC’s interrupt pending bits.
+* Description    : Clears the RCCï¿½s interrupt pending bits.
 * Input          : - RCC_IT: specifies the interrupt pending bit to clear.
 *                    This parameter can be any combination of the following values:
 *                       - RCC_IT_LSIRDY: LSI ready interrupt

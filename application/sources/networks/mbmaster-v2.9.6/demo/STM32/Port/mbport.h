@@ -13,8 +13,8 @@
 
 #include <assert.h>
 
-#include "stm32l1xx.h"
-#include "stm32l1xx_conf.h"
+#include "stm32f10x.h"
+#include "stm32f10x_conf.h"
 
 #ifdef _cplusplus
 extern          "C"

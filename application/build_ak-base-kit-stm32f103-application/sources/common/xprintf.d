@@ -1,0 +1,20 @@
+build_ak-base-kit-stm32f103-application/sources/common/xprintf.o: \
+ sources/common/xprintf.c sources/common/xprintf.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/string.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/_ansi.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/newlib.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/_newlib_version.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/config.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/ieeefp.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/features.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/reent.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/_ansi.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_types.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/_types.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/_default_types.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/lock.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/cdefs.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/string.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h \
+ /home/rabbit/workspace/Tools/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/math.h

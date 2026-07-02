@@ -1,5 +1,5 @@
-#include <stm32l1xx_rcc.h>
-#include <stm32l1xx_gpio.h>
+#include <stm32f10x_rcc.h>
+#include <stm32f10x_gpio.h>
 #include <misc.h>
 #include <buzzer.h>
 
@@ -92,13 +92,11 @@ void BUZZER_Init(void) {
 
 	RCC_APB1PeriphClockCmd(BUZZER_TIM_PERIPH, ENABLE);
 
-	GPIO_InitStructure.GPIO_Pin = BUZZER_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+	GPIO_InitStructure.GPIO_Pin   = BUZZER_IO_PIN;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(BUZZER_IO_PORT, &GPIO_InitStructure);
-	GPIO_PinAFConfig(BUZZER_IO_PORT, BUZZER_IO_SOURCE, BUZZER_IO_AF);
+	//GPIO_PinAFConfig(BUZZER_IO_PORT, BUZZER_IO_SOURCE, BUZZER_IO_AF);
 	GPIO_ResetBits(BUZZER_IO_PORT, BUZZER_IO_PIN);
 
 	TIM_DeInit(BUZZER_TIM);
@@ -129,9 +127,10 @@ void BUZZER_Init(void) {
 	TIM_Cmd(BUZZER_TIM, ENABLE);
 
 	/* BUZZER disable */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Pin   = BUZZER_IO_PIN;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
 	GPIO_Init(BUZZER_IO_PORT, &GPIO_InitStructure);
+	
 }
 
 // Turn on buzzer with specified frequency
@@ -145,8 +144,8 @@ void BUZZER_Enable(uint16_t freq, uint32_t duration) {
 		_beep_duration = (freq / 100) * duration + 1;
 
 		// Configure buzzer pin
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+		GPIO_InitStructure.GPIO_Pin = BUZZER_IO_PIN;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 		GPIO_Init(BUZZER_IO_PORT, &GPIO_InitStructure);
 
 		// Configure and enable PWM timer
@@ -164,8 +163,8 @@ void BUZZER_Disable(void) {
 	// Disable TIMx peripheral to conserve power
 	RCC->APB1ENR &= ~BUZZER_TIM_PERIPH;
 	// Configure buzzer pin as analog input without pullup to conserve power
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Pin   = BUZZER_IO_PIN;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
 	GPIO_Init(BUZZER_IO_PORT, &GPIO_InitStructure);
 }
 

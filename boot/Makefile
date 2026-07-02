@@ -22,7 +22,7 @@ include sources/app/Makefile.mk
 include sources/common/Makefile.mk
 include sources/driver/Makefile.mk
 include sources/sys/Makefile.mk
-include sources/platform/stm32l/Makefile.mk
+include sources/platform/stm32f/Makefile.mk
 
 #Boot start address
 BOOT_START_ADDR_VAL = 0x08000000
