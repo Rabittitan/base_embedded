@@ -20,8 +20,15 @@ PROGRAMER_PATH      = /home/rabbit/workspace/Tools/bin
 OPENOCD_CFG_PATH    = /usr/local/share/openocd/scripts/board/stm32f103minimum.cfg
 
 # App start address, that need sync with declare in linker file and interrupt vector table.
-APP_START_ADDR_VAL = 0x08003000
+APP_START_ADDR_VAL = 0x08000000
 APP_ADDR_OPTION = -DAPP_START_ADDR=$(APP_START_ADDR_VAL)
+
+# SOC memory layout (for STM32F103C8T6)
+FLASH_BASE_ADDR_VAL = 0x08000000
+SOC_FLASH_BYTES      = 65536        # 64KB (nếu là 128KB thì sửa thành 131072)
+SOC_SRAM_BYTES       = 20480        # 20KB
+SOC_NAME             = STM32F103C8T6
+
 
 # Define console baudrate, that is used to configure UART.
 SYS_CONSOLE_BAUDRATE = 115200

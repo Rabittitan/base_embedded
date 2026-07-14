@@ -120,9 +120,9 @@ enum SSD1309_CMD_SET {
 #include "io_cfg.h"
 #endif
 
-#define OLED_I2C_CLK    OLED_CLK_PIN	
-#define OLED_I2C_DATA   OLED_DATA_PIN
-#define OLED_I2C_RES    OLED_RES_PIN
+#define OLED_I2C_CLK    (0x03)	
+#define OLED_I2C_DATA   (0x04)
+#define OLED_I2C_RES    (0x08)
 
 #define BLACK 0
 #define WHITE 1

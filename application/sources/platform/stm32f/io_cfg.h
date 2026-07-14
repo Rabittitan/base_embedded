@@ -45,8 +45,8 @@ extern "C"
 /*****************************************************************************
  *Pin map led life
 ******************************************************************************/
-#define LED_LIFE_IO_PIN					(GPIO_Pin_8)
-#define LED_LIFE_IO_PORT				(GPIOB)
+#define LED_LIFE_IO_PIN					(GPIO_Pin_13)
+#define LED_LIFE_IO_PORT				(GPIOC)
 #define LED_LIFE_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 /*****************************************************************************
@@ -97,21 +97,33 @@ extern "C"
 /****************************************************************************
  *Pin map Oled
 *****************************************************************************/
-#define OLED_CLK_PIN					(0x03)
-#define OLED_DATA_PIN					(0x04)
-#define OLED_RES_PIN					(0x08)
+// #define OLED_CLK_PIN					(0x03)
+// #define OLED_DATA_PIN					(0x04)
+// #define OLED_RES_PIN					(0x08)
 
-#define OLED_CLK_IO_PIN					(GPIO_Pin_13)
-#define OLED_CLK_IO_PORT				(GPIOB)
-#define OLED_CLK_IO_CLOCK				(RCC_APB2Periph_GPIOB)
+// #define OLED_CLK_IO_PIN					(GPIO_Pin_13)
+// #define OLED_CLK_IO_PORT				(GPIOB)
+// #define OLED_CLK_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
-#define OLED_DATA_IO_PIN				(GPIO_Pin_12)
-#define OLED_DATA_IO_PORT				(GPIOB)
-#define OLED_DATA_IO_CLOCK				(RCC_APB2Periph_GPIOB)
+// #define OLED_DATA_IO_PIN				(GPIO_Pin_12)
+// #define OLED_DATA_IO_PORT				(GPIOB)
+// #define OLED_DATA_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
-#define OLED_RES_IO_PIN					(GPIO_Pin_15)
-#define OLED_RES_IO_PORT				(GPIOA)
-#define OLED_RES_IO_CLOCK				(RCC_APB2Periph_GPIOA)
+// #define OLED_RES_IO_PIN					(GPIO_Pin_15)
+// #define OLED_RES_IO_PORT				(GPIOA)
+// #define OLED_RES_IO_CLOCK				(RCC_APB2Periph_GPIOA)
+/* I2C  */
+
+#define OLED_SCL_IO_PIN          GPIO_Pin_10
+#define OLED_SCL_IO_PORT         GPIOB
+#define OLED_SCL_IO_CLOCK        RCC_APB2Periph_GPIOB
+
+#define OLED_SDA_IO_PIN          GPIO_Pin_11 
+#define OLED_SDA_IO_PORT         GPIOB
+#define OLED_SDA_IO_CLOCK        RCC_APB2Periph_GPIOB
+
+
+
 
 /****************************************************************************
  *Pin map UART2
@@ -209,23 +221,30 @@ extern uint16_t adc_bat_io_read(uint8_t);
 /******************************************************************************
 * OLED IO function
 *******************************************************************************/
-extern void oled_clk_input_mode();
-extern void oled_clk_output_mode();
-extern void oled_clk_digital_write_low();
-extern void oled_clk_digital_write_high();
-extern int  oled_clk_digital_read();
+// extern void oled_clk_input_mode();
+// extern void oled_clk_output_mode();
+// extern void oled_clk_digital_write_low();
+// extern void oled_clk_digital_write_high();
+// extern int  oled_clk_digital_read();
 
-extern void oled_data_input_mode();
-extern void oled_data_output_mode();
-extern void oled_data_digital_write_low();
-extern void oled_data_digital_write_high();
-extern int  oled_data_digital_read();
+// extern void oled_data_input_mode();
+// extern void oled_data_output_mode();
+// extern void oled_data_digital_write_low();
+// extern void oled_data_digital_write_high();
+// extern int  oled_data_digital_read();
 
-extern void oled_res_input_mode();
-extern void oled_res_output_mode();
-extern void oled_res_digital_write_low();
-extern void oled_res_digital_write_high();
-extern int  oled_res_digital_read();
+// extern void oled_res_input_mode();
+// extern void oled_res_output_mode();
+// extern void oled_res_digital_write_low();
+// extern void oled_res_digital_write_high();
+// extern int  oled_res_digital_read();
+
+
+ extern void oled_i2c_io_init() ;
+// extern void oled_i2c_start();
+// extern void oled_i2c_stop();
+// extern uint8_t oled_i2c_write_byte(uint8_t byte);
+
 
 /******************************************************************************
 * eeprom function

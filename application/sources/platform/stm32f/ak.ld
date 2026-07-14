@@ -9,8 +9,8 @@
 ENTRY	(reset_handler)
 
 MEMORY {
-	BSF (rx)	: ORIGIN = 0x08002000, LENGTH = 4K
-	FLASH (rx)	: ORIGIN = 0x08003000, LENGTH = 52K
+/*	BSF (rx)	: ORIGIN = 0x08002000, LENGTH = 4K */
+	FLASH (rx)	: ORIGIN = 0x08000000, LENGTH = 52K
 	SRAM (rwx)	: ORIGIN = 0x20000000, LENGTH = 20K
 }
 
@@ -18,9 +18,12 @@ MEMORY {
 HEAP_SIZE = 2K;
 
 SECTIONS {
+	/*
 	.start_boot_share_data_flash : {
 		_start_boot_share_data_flash = .;
 	} > BSF
+
+	*/
 
 	/* start of FLASH */
 	.start_flash : {

@@ -52,7 +52,7 @@
 #include "sys_dbg.h"
 
 /* arduino include */
-// #include "SPI.h"
+ #include "SPI.h"
 #include "WString.h"
 #include "HardwareSerial.h"
 #include "ArduinoJson.h"
@@ -129,7 +129,7 @@ int main_app() {
 	sys_ctrl_independent_watchdog_init();	/* 32s */
 	sys_ctrl_soft_watchdog_init(200);		/* 20s */
 
-	//SPI.begin();
+	SPI.begin();
 
 	/* adc peripheral configure */
 	io_cfg_adc1();			/* configure adc for thermistor and CT sensor */
@@ -164,18 +164,19 @@ int main_app() {
 	BUZZER_Init();
 	BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 
-	/* get boot share data */
-	flash_read(APP_FLASH_INTTERNAL_SHARE_DATA_SECTOR_1, reinterpret_cast<uint8_t*>(&boot_app_share_data), sizeof(boot_app_share_data_t));
-	if (boot_app_share_data.is_power_on_reset == SYS_POWER_ON_RESET) {
-		app_power_on_reset();
-	}
 
-	/* increase start time */
-	fatal_log_t app_fatal_log;
-	flash_read(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, reinterpret_cast<uint8_t*>(&app_fatal_log), sizeof(fatal_log_t));
-	app_fatal_log.restart_times ++;
-	flash_erase_sector(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR);
-	flash_write(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, reinterpret_cast<uint8_t*>(&app_fatal_log), sizeof(fatal_log_t));
+	// /* get boot share data */
+	// flash_read(APP_FLASH_INTTERNAL_SHARE_DATA_SECTOR_1, reinterpret_cast<uint8_t*>(&boot_app_share_data), sizeof(boot_app_share_data_t));
+	// if (boot_app_share_data.is_power_on_reset == SYS_POWER_ON_RESET) {
+	// 	app_power_on_reset();
+	// }
+
+	// /* increase start time */
+	// fatal_log_t app_fatal_log;
+	// flash_read(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, reinterpret_cast<uint8_t*>(&app_fatal_log), sizeof(fatal_log_t));
+	// app_fatal_log.restart_times ++;
+	// flash_erase_sector(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR);
+	// flash_write(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, reinterpret_cast<uint8_t*>(&app_fatal_log), sizeof(fatal_log_t));
 
 #if defined (TASK_MBMASTER_EN)
 	/* modbus rtu init*/
