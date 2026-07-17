@@ -1,3 +1,3 @@
-include sources/libraries/QRCode/Makefile.mk
+# DISABLED FOR GAME MINIMAL: include sources/libraries/QRCode/Makefile.mk
 include sources/libraries/ArduinoJson/Makefile.mk
 include sources/libraries/nlohmann/Makefile.mk

@@ -79,7 +79,9 @@ class TwoWire : public Stream
     using Print::write;
 };
 
+#if defined(IF_ARDUINO_WIRE_EN)
 extern TwoWire Wire;
+#endif
 
 #endif
 

@@ -14,7 +14,7 @@ static view_render_item render_list[] = {
 void view_render_init() {
 	number_item = sizeof(render_list)/sizeof(view_render_item);
 	view_render.initialize();
-}
+} 
 
 int view_render_rectangle(void* rectangle) {
 	uint8_t x, y, len;

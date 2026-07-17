@@ -38,11 +38,12 @@
 #include "task_list.h"
 #include "task_shell.h"
 #include "task_life.h"
-#include "task_if.h"
-#include "task_rf24_if.h"
-#include "task_uart_if.h"
-// #include "task_display.h"
-#include "task_zigbee.h"
+
+
+//#include "task_rf24_if.h"
+//#include "task_uart_if.h"
+//#include "task_display.h"
+//#include "task_zigbee.h"
 
 /* sys include */
 #include "sys_boot.h"
@@ -52,13 +53,12 @@
 #include "sys_dbg.h"
 
 /* arduino include */
- #include "SPI.h"
+#include "SPI.h"
 #include "WString.h"
 #include "HardwareSerial.h"
 #include "ArduinoJson.h"
 
 /* common include */
-#include "screen_manager.h"
 
 /* ----------------------- Platform includes --------------------------------*/
 
@@ -98,6 +98,8 @@ static void app_start_timer();
 static void app_init_state_machine();
 static void app_task_init();
 
+
+
 /*****************************************************************************/
 /* app main function.
  */
@@ -129,7 +131,7 @@ int main_app() {
 	sys_ctrl_independent_watchdog_init();	/* 32s */
 	sys_ctrl_soft_watchdog_init(200);		/* 20s */
 
-	SPI.begin();
+	//SPI.begin();
 
 	/* adc peripheral configure */
 	io_cfg_adc1();			/* configure adc for thermistor and CT sensor */
@@ -138,7 +140,7 @@ int main_app() {
 	adc_bat_io_cfg();
 
 	/* flash io init */
-	flash_io_ctrl_init();
+	//flash_io_ctrl_init();
 
 	/*********************
 	* software configure *
@@ -149,21 +151,28 @@ int main_app() {
 	/* life led init */
 	led_init(&led_life, led_life_init, led_life_on, led_life_off);
 
+
+	
 	ring_buffer_char_init(&ring_buffer_console_rev, buffer_console_rev, BUFFER_CONSOLE_REV_SIZE);
 
+
+	
+	
 	/* button init */
 	button_init(&btn_mode,	10,	BUTTON_MODE_ID,	io_button_mode_init,	io_button_mode_read,	btn_mode_callback);
+	
 	button_init(&btn_up,	10,	BUTTON_UP_ID,	io_button_up_init,		io_button_up_read,		btn_up_callback);
+	
 	button_init(&btn_down,	10,	BUTTON_DOWN_ID,	io_button_down_init,	io_button_down_read,	btn_down_callback);
-
+	
 	button_enable(&btn_mode);
 	button_enable(&btn_up);
 	button_enable(&btn_down);
 
+	
 	/* siren init */
 	BUZZER_Init();
 	BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
-
 
 	// /* get boot share data */
 	// flash_read(APP_FLASH_INTTERNAL_SHARE_DATA_SECTOR_1, reinterpret_cast<uint8_t*>(&boot_app_share_data), sizeof(boot_app_share_data_t));
@@ -261,10 +270,16 @@ int main_app() {
 	}
 #endif
 
+
+
+
+	
 	/* start timer for application */
 	app_init_state_machine();
 	app_start_timer();
 
+
+	
 	/******************************************************************************
 	* app task initial
 	*******************************************************************************/
@@ -349,8 +364,7 @@ void task_polling_console() {
 void app_start_timer() {
 	/* start timer to toggle life led */
 	timer_set(AC_TASK_LIFE_ID, AC_LIFE_SYSTEM_CHECK, AC_LIFE_TASK_TIMER_LED_LIFE_INTERVAL, TIMER_PERIODIC);
-	timer_set(AC_TASK_FW_ID, FW_CHECKING_REQ, FW_UPDATE_REQ_INTERVAL, TIMER_ONE_SHOT);
-	timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_INITIAL, AC_DISPLAY_INITIAL_INTERVAL, TIMER_ONE_SHOT);
+
 }
 
 /* init state machine for tasks
@@ -364,10 +378,14 @@ void app_init_state_machine() {
  * used for app tasks
  */
 void app_task_init() {
-	//SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
+//	SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
+	
+	// led_life_on();
+    // sys_ctrl_delay_us(1000000);
 
-	task_post_pure_msg(AC_TASK_RF24_IF_ID, AC_RF24_IF_INIT_NETWORK);
-	task_post_pure_msg(AC_TASK_UART_IF_ID, AC_UART_IF_INIT);
+	task_post_pure_msg(AC_TASK_GAME_ID,AC_GAME_INIT);
+	// led_life_off();
+
 }
 
 /*****************************************************************************/

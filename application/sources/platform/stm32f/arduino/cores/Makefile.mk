@@ -16,4 +16,4 @@ SOURCES_CPP += sources/platform/stm32f/arduino/cores/WMath.cpp
 SOURCES_CPP += sources/platform/stm32f/arduino/cores/itoa.cpp
 SOURCES_CPP += sources/platform/stm32f/arduino/cores/IPAddress.cpp
 SOURCES_CPP += sources/platform/stm32f/arduino/cores/HardwareSerial.cpp
-SOURCES_CPP += sources/platform/stm32f/arduino/cores/HardwareSerial2.cpp
+## SOURCES_CPP += sources/platform/stm32f/arduino/cores/HardwareSerial2.cpp

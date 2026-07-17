@@ -14,9 +14,6 @@
 #include "sys_ctrl.h"
 
 #include "app_dbg.h"
-
-#include "eeprom.h"
-
 #include "system.h"
 
 #include "stm32f10x_spi.h"
@@ -33,22 +30,20 @@
 *******************************************************************************/
 void io_button_mode_init() {
 	GPIO_InitTypeDef GPIO_InitStructure;
-
-	RCC_AHBPeriphClockCmd(BUTTON_MODE_IO_CLOCK, ENABLE);
-
+	RCC_APB2PeriphClockCmd(BUTTON_MODE_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin   = BUTTON_MODE_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(BUTTON_MODE_IO_PORT, &GPIO_InitStructure);
 }
 
 void io_button_up_init() {
+		
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	RCC_AHBPeriphClockCmd(BUTTON_UP_IO_CLOCK, ENABLE);
-
+	RCC_APB2PeriphClockCmd(BUTTON_UP_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin   = BUTTON_UP_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(BUTTON_UP_IO_PORT, &GPIO_InitStructure);
 }
@@ -56,13 +51,10 @@ void io_button_up_init() {
 void io_button_down_init() {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	RCC_AHBPeriphClockCmd(BUTTON_DOWN_IO_CLOCK, ENABLE);
-
+	RCC_APB2PeriphClockCmd(BUTTON_DOWN_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin   = BUTTON_DOWN_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
-
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	
 	GPIO_Init(BUTTON_DOWN_IO_PORT, &GPIO_InitStructure);
 }
 
@@ -84,7 +76,7 @@ uint8_t io_button_down_read() {
 void led_life_init() {
 	GPIO_InitTypeDef        GPIO_InitStructure;
 
-	RCC_AHBPeriphClockCmd(LED_LIFE_IO_CLOCK, ENABLE);
+	RCC_APB2PeriphClockCmd(LED_LIFE_IO_CLOCK, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = LED_LIFE_IO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -94,160 +86,17 @@ void led_life_init() {
 	GPIO_Init(LED_LIFE_IO_PORT, &GPIO_InitStructure);
 }
 
-void led_life_on() {
+void led_life_off() {
 	GPIO_SetBits(LED_LIFE_IO_PORT, LED_LIFE_IO_PIN);
 }
 
-void led_life_off() {
+void led_life_on() {
 	GPIO_ResetBits(LED_LIFE_IO_PORT, LED_LIFE_IO_PIN);
 }
 
 /******************************************************************************
 * nfr24l01 IO function
 *******************************************************************************/
-void nrf24l01_io_ctrl_init() {
-	/* CE / CSN / IRQ */
-	GPIO_InitTypeDef        GPIO_InitStructure;
-	EXTI_InitTypeDef        EXTI_InitStruct;
-	NVIC_InitTypeDef        NVIC_InitStruct;
-
-	/* GPIOA Periph clock enable */
-	RCC_AHBPeriphClockCmd(NRF_CE_IO_CLOCK, ENABLE);
-	RCC_AHBPeriphClockCmd(NRF_CSN_IO_CLOCK, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-
-	/*CE -> PA8*/
-	GPIO_InitStructure.GPIO_Pin = NRF_CE_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	
-	GPIO_Init(NRF_CE_IO_PORT, &GPIO_InitStructure);
-
-	/*CNS -> PB9*/
-	GPIO_InitStructure.GPIO_Pin = NRF_CSN_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(NRF_CSN_IO_PORT, &GPIO_InitStructure);
-
-	/* IRQ -> PB1 */
-	GPIO_InitStructure.GPIO_Pin = NRF_IRQ_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(NRF_IRQ_IO_PORT, &GPIO_InitStructure);
-
-	//SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource1);
-
-	EXTI_InitStruct.EXTI_Line = EXTI_Line1;
-	EXTI_InitStruct.EXTI_LineCmd = ENABLE;
-	EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
-	EXTI_Init(&EXTI_InitStruct);
-
-	NVIC_InitStruct.NVIC_IRQChannel = EXTI1_IRQn;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 3;
-	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStruct);
-}
-
-
-
-void nrf24l01_spi_ctrl_init() {
-	GPIO_InitTypeDef  GPIO_InitStructure;
-	SPI_InitTypeDef   SPI_InitStructure;
-
-	/*!< SPI GPIO Periph clock enable */
-	RCC_AHBPeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-
-	/*!< SPI Periph clock enable */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
-
-	/*!< Configure SPI pins: SCK */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	/*!< Configure SPI pins: MISO */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	/*!< Configure SPI pins: MOSI */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	/* Connect PXx to SPI_SCK */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AFIODeInit);
-
-	/* Connect PXx to SPI_MISO */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AFIODeInit);
-
-	/* Connect PXx to SPI_MOSI */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AFIODeInit);
-
-	/*!< SPI Config */
-	SPI_DeInit(SPI1);
-	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
-
-	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-	SPI_InitStructure.SPI_CRCPolynomial = 7;
-	SPI_Init(SPI1, &SPI_InitStructure);
-
-	SPI_Cmd(SPI1, ENABLE); /*!< SPI enable */
-}
-
-
-void nrf24l01_ce_low() {
-	GPIO_ResetBits(NRF_CE_IO_PORT, NRF_CE_IO_PIN);
-}
-
-void nrf24l01_ce_high() {
-	GPIO_SetBits(NRF_CE_IO_PORT, NRF_CE_IO_PIN);
-}
-
-void nrf24l01_csn_low() {
-	GPIO_ResetBits(NRF_CSN_IO_PORT, NRF_CSN_IO_PIN);
-}
-
-void nrf24l01_csn_high() {
-	GPIO_SetBits(NRF_CSN_IO_PORT, NRF_CSN_IO_PIN);
-}
-
-uint8_t nrf24l01_spi_rw(uint8_t data) {
-	unsigned long rxtxData = data;
-	uint32_t counter;
-
-	/* waiting send idle then send data */
-	counter = system_info.cpu_clock / 1000;
-	while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET) {
-		if (counter-- == 0) {
-			FATAL("spi", 0x01);
-		}
-	}
-
-	SPI_I2S_SendData(SPI1, (uint8_t)rxtxData);
-
-	/* waiting conplete rev data */
-	counter = system_info.cpu_clock / 1000;
-	while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET) {
-		if (counter-- == 0) {
-			FATAL("spi", 0x02);
-		}
-	}
-
-	rxtxData = (uint8_t)SPI_I2S_ReceiveData(SPI1);
-
-	return (uint8_t)rxtxData;
-}
-
 /******************************************************************************
 * flash IO config
 *******************************************************************************/
@@ -276,7 +125,6 @@ uint8_t flash_transfer(uint8_t data) {
 	unsigned long rxtxData = data;
 	uint32_t counter;
 
-	uint32_t timeout = 0xFFFF;
 
 	/* waiting send idle then send data */
 	counter = system_info.cpu_clock / 1000;
@@ -521,90 +369,7 @@ void oled_i2c_io_init() {
 
 
 
-/******************************************************************************
-* eeprom function
-* when using function DATA_EEPROM_ProgramByte,
-* must be DATA_EEPROM_unlock- DATA_EEPROM_ProgramByte- DATA_EEPROM_lock
-*******************************************************************************/
-uint8_t io_eeprom_read(uint32_t address, uint8_t* pbuf, uint32_t len) {
-	uint32_t eeprom_address = 0;
 
-	eeprom_address = address + EEPROM_BASE_ADDRESS;
-
-	if ((uint8_t*)pbuf == (uint8_t*)0 || len == 0 ||(address + len)> EEPROM_MAX_SIZE) {
-		return EEPROM_DRIVER_NG;
-	}
-
-	DATA_EEPROM_Unlock();
-	memcpy(pbuf, (const uint8_t*)eeprom_address, len);
-	DATA_EEPROM_Lock();
-
-	return EEPROM_DRIVER_OK;
-}
-
-uint8_t io_eeprom_write(uint32_t address, uint8_t* pbuf, uint32_t len) {
-	uint32_t eeprom_address = 0;
-	uint32_t index = 0;
-	uint32_t flash_status;
-
-	eeprom_address = address + EEPROM_BASE_ADDRESS;
-
-	if ((uint8_t*)pbuf == (uint8_t*)0 || len == 0 ||(address + len)> EEPROM_MAX_SIZE) {
-		return EEPROM_DRIVER_NG;
-	}
-
-	DATA_EEPROM_Unlock();
-
-	while (index < len) {
-		flash_status = DATA_EEPROM_ProgramByte((eeprom_address + index), (uint32_t)(*(pbuf + index)));
-
-		if(flash_status == FLASH_COMPLETE) {
-			index++;
-		}
-		else {
-			FLASH_ClearFlag(FLASH_FLAG_EOP| FLASH_FLAG_WRPRTERR| FLASH_FLAG_PGERR
-							| FLASH_FLAG_BSY | FLASH_FLAG_OPTERR);
-		}
-	}
-
-
-	DATA_EEPROM_Lock();
-
-	return EEPROM_DRIVER_OK;
-}
-
-uint8_t io_eeprom_erase(uint32_t address, uint32_t len) {
-	uint32_t eeprom_address = 0;
-	uint32_t index = 0;
-	uint32_t flash_status;
-
-	eeprom_address = address + EEPROM_BASE_ADDRESS;
-
-	if (len == 0 ||(address + len)> EEPROM_MAX_SIZE) {
-		return EEPROM_DRIVER_NG;
-	}
-
-	DATA_EEPROM_Unlock();
-
-	while(index < len) {
-		sys_ctrl_soft_watchdog_reset();
-		sys_ctrl_independent_watchdog_reset();
-
-		flash_status = DATA_EEPROM_ProgramByte(eeprom_address + index, 0x00);
-
-		if(flash_status == FLASH_COMPLETE) {
-			index++;
-		}
-		else {
-			FLASH_ClearFlag(FLASH_FLAG_EOP| FLASH_FLAG_WRPRTERR| FLASH_FLAG_PGERR
-							| FLASH_FLAG_BSY | FLASH_FLAG_OPTERR);
-		}
-	}
-
-	DATA_EEPROM_Lock();
-
-	return EEPROM_DRIVER_OK;
-}
 
 void internal_flash_unlock() {
 	FLASH_Unlock();
@@ -661,7 +426,7 @@ void io_uart2_cfg() {
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	/* Enable GPIO clock */
-	RCC_AHBPeriphClockCmd(USART2_TX_GPIO_CLK | USART2_RX_GPIO_CLK, ENABLE);
+	RCC_APB2PeriphClockCmd(USART2_TX_GPIO_CLK | USART2_RX_GPIO_CLK, ENABLE);
 
 	/* Enable USART clock */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);

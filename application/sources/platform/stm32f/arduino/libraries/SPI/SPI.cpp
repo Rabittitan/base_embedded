@@ -334,4 +334,6 @@ void SPIClass::setModule(uint8_t module) {
 	begin();
 }
 
+#if defined(IF_NETWORK_NRF24_EN)
 SPIClass SPI;
+#endif

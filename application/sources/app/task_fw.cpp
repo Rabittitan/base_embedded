@@ -171,7 +171,7 @@ void task_fw(ak_msg_t* msg) {
 		/* TODO: when recieve firmware update request.
 		 * depend on each system, we need to check system state then decide update or respondse busy signal */
 		task_post_pure_msg(AC_TASK_FW_ID, FW_UPDATE_SM_OK);
-		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_FW_UPDATE);
+
 	}
 		break;
 
@@ -278,7 +278,7 @@ void task_fw(ak_msg_t* msg) {
 
 	case FW_PACKED_TIMEOUT: {
 		APP_DBG_SIG("FW_PACKED_TIMEOUT\n");
-		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_FW_UPDATE_ERR);
+
 	}
 		break;
 

@@ -325,5 +325,7 @@ void TwoWire::onRequest( void (*function)(void) )
 
 // Preinstantiate Objects //////////////////////////////////////////////////////
 
+#if defined(IF_ARDUINO_WIRE_EN)
 TwoWire Wire = TwoWire();
+#endif
 

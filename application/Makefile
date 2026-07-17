@@ -61,12 +61,12 @@ IRQ_DEBUG_OPTION = -UAK_IO_IRQ_ANALYZER
 USB_OPTION = -UUSING_USB_MOD
 
 # Interface compile option.
-IF_LINK_OPTION = -DIF_LINK_UART_EN
+IF_LINK_OPTION =
 IF_NETWORK_NRF24_OPTION = -UIF_NETWORK_NRF24_EN
 
 # Task compile option.
 TASK_ZIGBEE_OPTION = -UTASK_ZIGBEE_EN
-TASK_MBMASTER_OPTION = -DTASK_MBMASTER_EN
+TASK_MBMASTER_OPTION =
 
 # Include sources file
 include sources/ak/Makefile.mk
@@ -181,9 +181,8 @@ TASK_OPTION +=  $(TASK_MBMASTER_OPTION)
 
 # Hardware option
 HARDWARE_OPTION += \
-        -DSSD1309_DRIVER_EN \
-        -USH1106_DRIVER_EN
-
+        -DSH1106_DRIVER_EN \
+        -USSD1309_DRIVER_EN
 # Console log compile option
 CONSOLE_OPTION +=           \
         -DLOGIN_PRINT_EN    \

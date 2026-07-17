@@ -90,6 +90,8 @@ public:
     void setModule(uint8_t);
 };
 
+#if defined(IF_NETWORK_NRF24_EN)
 extern SPIClass SPI;
+#endif
 
 #endif //__SPI_H__

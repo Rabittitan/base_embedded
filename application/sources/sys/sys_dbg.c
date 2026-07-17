@@ -11,11 +11,7 @@
 #include "io_cfg.h"
 
 #include "ak.h"
-
-#include "flash.h"
-
 #include "app_eeprom.h"
-#include "app_flash.h"
 #include "xprintf.h"
 
 #define DUMP_RAM_UNIT_SIZE			256
@@ -23,255 +19,154 @@
 static fatal_log_t fatal_log;
 
 void sys_dbg_fatal(const int8_t* s, uint8_t c) {
-	extern uint32_t _start_ram;
-	extern uint32_t _estack;
+        memset(&fatal_log, 0, sizeof(fatal_log));
 
-	uint32_t len_of_ram = (uint32_t)&_estack - (uint32_t)&_start_ram;
-	uint32_t ram_dump_num_64k_needed = (len_of_ram / FLASH_BLOCK_64K_SIZE) + 1;
-	uint32_t index;
+        strncpy((char *)fatal_log.string,
+                (const char *)s,
+                sizeof(fatal_log.string) - 1);
 
-	unsigned char rev_c = 0;
-	task_t*		ptemp_current_task;
-	ak_msg_t*	ptemp_current_active_object;
-	ak_msg_t	t_msg;
-	exception_info_t t_exception_info;
+        fatal_log.string[sizeof(fatal_log.string) - 1] = '\0';
+        fatal_log.code = c;
 
-#if defined(TIVA_PLATFORM)
-	UARTprintf("%s\t%x\n", s, c);
-#endif
-#if defined(STM32L_PLATFORM) || defined(STM32F10X_PLATFORM)
-	xprintf("%s\t%x\n", s, c);
-#endif
+        fatal_log.current_task = *get_current_task_info();
+        fatal_log.current_active_object = *get_current_active_object();
 
-	/* read fatal data from epprom */
-	flash_read(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, (uint8_t*)&fatal_log, sizeof(fatal_log_t));
+        fatal_log.m3_core_reg.ipsr = __get_IPSR();
+        fatal_log.m3_core_reg.primask = __get_PRIMASK();
+        fatal_log.m3_core_reg.faultmask = __get_FAULTMASK();
+        fatal_log.m3_core_reg.basepri = __get_BASEPRI();
+        fatal_log.m3_core_reg.control = __get_CONTROL();
 
-	/* increase fatal time */
-	fatal_log.fatal_times ++;
+        __disable_irq();
 
-	/* set fatal string */
-	memset(fatal_log.string, 0, 10);
-	strcpy((char*)fatal_log.string, (const char*)s);
+        SYS_PRINT("\n");
+        SYS_PRINT("================================================\n");
+        SYS_PRINT(" AK FATAL\n");
+        SYS_PRINT("================================================\n");
 
-	/* set fatal code */
-	fatal_log.code = c;
+        SYS_PRINT("\n[FATAL]\n");
+        SYS_PRINT("type      : %s\n", fatal_log.string);
+        SYS_PRINT("code      : 0x%02X\n", fatal_log.code);
 
-	/* get task fatal */
-	ptemp_current_task = get_current_task_info();
-	ptemp_current_task->id = get_current_task_id();
+        SYS_PRINT("\n[AK TASK]\n");
+        SYS_PRINT("id        : %d\n", fatal_log.current_task.id);
+        SYS_PRINT("priority  : %d\n", fatal_log.current_task.pri);
+        SYS_PRINT("entry     : 0x%08X\n", fatal_log.current_task.task);
 
-	/* get active object fatal */
-	ptemp_current_active_object = get_current_active_object();
+        SYS_PRINT("\n[AK ACTIVE MESSAGE]\n");
+        SYS_PRINT("task      : %d\n",
+                  fatal_log.current_active_object.des_task_id);
+        SYS_PRINT("signal    : %d\n",
+                  fatal_log.current_active_object.sig);
+        SYS_PRINT("type      : 0x%X\n",
+                  get_msg_type(&fatal_log.current_active_object));
+        SYS_PRINT("ref count : %d\n",
+                  get_msg_ref_count(&fatal_log.current_active_object));
 
-	/* get core register */
-	fatal_log.m3_core_reg.ipsr		= __get_IPSR();
-	fatal_log.m3_core_reg.primask	= __get_PRIMASK();
-	fatal_log.m3_core_reg.faultmask	= __get_FAULTMASK();
-	fatal_log.m3_core_reg.basepri	= __get_BASEPRI();
-	fatal_log.m3_core_reg.control	= __get_CONTROL();
-
-	memcpy(&fatal_log.current_task, ptemp_current_task, sizeof(task_t));
-	memcpy(&fatal_log.current_active_object, ptemp_current_active_object, sizeof(ak_msg_t));
-
-	/************************
-	 *  trace irq info    *
-	 ************************/
-#if defined(AK_IRQ_OBJ_LOG_ENABLE)
-	uint32_t flash_irq_log_address = APP_FLASH_AK_DBG_IRQ_LOG_SECTOR;
-	SYS_PRINT("start write irq info\n");
-	flash_erase_sector(flash_irq_log_address);
-	while(log_queue_len(&log_irq_queue)) {
-		log_queue_get(&log_irq_queue, &t_exception_info);
-		flash_write(flash_irq_log_address, (uint8_t*)&t_exception_info, sizeof(exception_info_t));
-		flash_irq_log_address += sizeof(exception_info_t);
-	}
-#endif
-
-	/************************
-	 *  trace fatal info    *
-	 ************************/
-	SYS_PRINT("start write fatal info\n");
-	flash_erase_sector(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR);
-	flash_write(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, (uint8_t*)&fatal_log, sizeof(fatal_log_t));
-
-	/************************
-	 *  trace fatal message *
-	 ************************/
 #if defined(AK_TASK_OBJ_LOG_ENABLE)
-	uint32_t flash_sys_log_address = APP_FLASH_AK_DBG_MSG_SECTOR_1;
-	SYS_PRINT("start write message log to flash\n");
-	flash_erase_sector(flash_sys_log_address);
-	while(log_queue_len(&log_task_dbg_object_queue)) {
-		log_queue_get(&log_task_dbg_object_queue, &t_msg);
-		flash_write(flash_sys_log_address, (uint8_t*)&t_msg, sizeof(ak_msg_t));
-		flash_sys_log_address += sizeof(ak_msg_t);
-	}
+        SYS_PRINT("\n[AK EVENT TRACE]\n");
+
+        ak_msg_t trace_msg;
+        uint32_t trace_index = 0;
+
+        while (log_queue_len(&log_task_dbg_object_queue)) {
+                log_queue_get(
+                        &log_task_dbg_object_queue,
+                        &trace_msg
+                );
+
+                uint32_t wait_time;
+
+                if (trace_msg.dbg_handler.start_exe >=
+                    trace_msg.dbg_handler.start_post) {
+
+                        wait_time =
+                                trace_msg.dbg_handler.start_exe -
+                                trace_msg.dbg_handler.start_post;
+                }
+                else {
+                        wait_time =
+                                trace_msg.dbg_handler.start_exe +
+                                (0xFFFFFFFF -
+                                 trace_msg.dbg_handler.start_post);
+                }
+
+                uint32_t exe_time;
+
+                if (trace_msg.dbg_handler.stop_exe >=
+                    trace_msg.dbg_handler.start_exe) {
+
+                        exe_time =
+                                trace_msg.dbg_handler.stop_exe -
+                                trace_msg.dbg_handler.start_exe;
+                }
+                else {
+                        exe_time =
+                                trace_msg.dbg_handler.stop_exe +
+                                (0xFFFFFFFF -
+                                 trace_msg.dbg_handler.start_exe);
+                }
+
+                SYS_PRINT(
+                        "#%d task=%d sig=%d type=0x%X ref=%d wait=%d exe=%d\n",
+                        trace_index++,
+                        trace_msg.des_task_id,
+                        trace_msg.sig,
+                        get_msg_type(&trace_msg),
+                        get_msg_ref_count(&trace_msg),
+                        wait_time,
+                        exe_time
+                );
+        }
 #endif
 
-	/************************
-	 *  dump RAM to flash   *
-	 ************************/
-	SYS_PRINT("start dump RAM to FLASH\n");
-	for (index = 0; index < ram_dump_num_64k_needed; index++) {
-		flash_erase_block_64k(APP_FLASH_DUMP_RAM_START_ADDR + (FLASH_BLOCK_64K_SIZE * index));
-		sys_ctrl_delay_us(100);
-	}
+#if defined(AK_IRQ_OBJ_LOG_ENABLE)
+        SYS_PRINT("\n[IRQ TRACE]\n");
 
-	index = 0;
-	while (index < len_of_ram) {
-		flash_write(APP_FLASH_DUMP_RAM_START_ADDR + index, (uint8_t*)((uint32_t)&_start_ram + index), DUMP_RAM_UNIT_SIZE);
-		index += DUMP_RAM_UNIT_SIZE;
-	}
+        exception_info_t trace_irq;
+        uint32_t irq_index = 0;
 
-	sys_ctrl_delay_us(1000);
+        while (log_queue_len(&log_irq_queue)) {
+                log_queue_get(
+                        &log_irq_queue,
+                        &trace_irq
+                );
 
-#if defined(RELEASE)
-	sys_ctrl_reset();
+                SYS_PRINT(
+                        "#%d exception=%d irq=%d timestamp=%d\n",
+                        irq_index++,
+                        trace_irq.except_number,
+                        (int32_t)trace_irq.except_number -
+                        (int32_t)
+                        SYS_IRQ_EXCEPTION_NUMBER_IRQ0_NUMBER_RESPECTIVE,
+                        trace_irq.timestamp
+                );
+        }
 #endif
 
-	while(1) {
-		/* reset watchdog */
-		sys_ctrl_independent_watchdog_reset();
-		sys_ctrl_soft_watchdog_reset();
+        SYS_PRINT("\n[CPU CORE]\n");
+        SYS_PRINT("IPSR      : %d\n",
+                  fatal_log.m3_core_reg.ipsr);
+        SYS_PRINT("PRIMASK   : 0x%08X\n",
+                  fatal_log.m3_core_reg.primask);
+        SYS_PRINT("FAULTMASK : 0x%08X\n",
+                  fatal_log.m3_core_reg.faultmask);
+        SYS_PRINT("BASEPRI   : 0x%08X\n",
+                  fatal_log.m3_core_reg.basepri);
+        SYS_PRINT("CONTROL   : 0x%08X\n",
+                  fatal_log.m3_core_reg.control);
 
-		/* FATAL debug option */
-		rev_c = sys_ctrl_shell_get_char();
-		if (rev_c) {
-			switch (rev_c) {
-			/* system reset */
-			case 'r':
-				sys_ctrl_reset();
-				break;
+        SYS_PRINT("\n================================================\n");
+        SYS_PRINT(" SYSTEM HALTED\n");
+        SYS_PRINT("================================================\n");
 
-				/* dump RAM */
-			case 'R': {
-				index = 0;
-				SYS_PRINT("\n[dump RAM]\n");
-				for (uint32_t i = 0; i < len_of_ram; i++) {
-					if (!(i % 8)) {
-						/* reset watchdog */
-						sys_ctrl_independent_watchdog_reset();
-						sys_ctrl_soft_watchdog_reset();
+        while (1) {
+                led_life_on();
+                sys_ctrl_delay_us(200000);
 
-						SYS_PRINT("\n0x%x\t" , (uint32_t)&_start_ram + i);
-					}
-
-					SYS_PRINT("%d\t", *((uint8_t*)((uint32_t)&_start_ram + i)));
-				}
-				SYS_PRINT("\n");
-			}
-				break;
-
-				/* exception info */
-			case 'e': {
-				SYS_PRINT("\n[exception log]\n");
-				uint32_t	flash_irq_log_address = APP_FLASH_AK_DBG_IRQ_LOG_SECTOR;
-				for (uint32_t index = 0; index < (LOG_QUEUE_IRQ_SIZE / sizeof(exception_info_t)); index++) {
-					/* reset watchdog */
-					sys_ctrl_independent_watchdog_reset();
-					sys_ctrl_soft_watchdog_reset();
-
-					flash_read(flash_irq_log_address, (uint8_t*)&t_exception_info, sizeof(exception_info_t));
-					flash_irq_log_address += sizeof(exception_info_t);
-
-					SYS_PRINT("index: %d\texcept_number: %d\tirq_number: %d\ttimestamp: %d\n"\
-							  , index										\
-							  , t_exception_info.except_number																				\
-							  , (int32_t)((int32_t)t_exception_info.except_number - (int32_t)SYS_IRQ_EXCEPTION_NUMBER_IRQ0_NUMBER_RESPECTIVE)	\
-							  , t_exception_info.timestamp);
-				}
-			}
-				break;
-
-			case 'm': {
-				SYS_PRINT("\n[active obj log]\n");
-				uint32_t	flash_sys_log_address = APP_FLASH_AK_DBG_MSG_SECTOR_1;
-				for (uint32_t index = 0; index < (LOG_QUEUE_OBJECT_SIZE / sizeof(ak_msg_t)); index++) {
-					/* reset watchdog */
-					sys_ctrl_independent_watchdog_reset();
-					sys_ctrl_soft_watchdog_reset();
-
-					flash_read(flash_sys_log_address, (uint8_t*)&t_msg, sizeof(ak_msg_t));
-					flash_sys_log_address += sizeof(ak_msg_t);
-
-					uint32_t wait_time;
-					(void)wait_time;
-					if (t_msg.dbg_handler.start_exe >= t_msg.dbg_handler.start_post) {
-						wait_time = t_msg.dbg_handler.start_exe - t_msg.dbg_handler.start_post;
-					}
-					else {
-						wait_time = t_msg.dbg_handler.start_exe + (0xFFFFFFFF - t_msg.dbg_handler.start_post);
-					}
-
-					uint32_t exe_time;
-					(void)exe_time;
-					if (t_msg.dbg_handler.stop_exe >= t_msg.dbg_handler.start_exe) {
-						exe_time = t_msg.dbg_handler.stop_exe - t_msg.dbg_handler.start_exe;
-					}
-					else {
-						exe_time = t_msg.dbg_handler.stop_exe + (0xFFFFFFFF - t_msg.dbg_handler.start_exe);
-					}
-
-					SYS_PRINT("index: %d\ttask_id: %d\tmsg_type:0x%x\tref_count:%d\tsig: %d\t\twait_time: %d\texe_time: %d\n"\
-							  , index										\
-							  , t_msg.des_task_id								\
-							  , (t_msg.ref_count & AK_MSG_TYPE_MASK)		\
-							  , (t_msg.ref_count & AK_MSG_REF_COUNT_MASK)	\
-							  , t_msg.sig									\
-							  , (wait_time)								\
-							  , (exe_time));
-				}
-			}
-				break;
-
-			case 'f': {
-				SYS_PRINT("\n[fatal info]\n");
-				SYS_PRINT("\n");
-				SYS_PRINT("[fatal] type: %s\n",		fatal_log.string);
-				SYS_PRINT("[fatal] code: 0x%02X\n",	fatal_log.code);
-
-				SYS_PRINT("\n");
-				SYS_PRINT("[task] id: %d\n",		fatal_log.current_task.id);
-				SYS_PRINT("[task] pri: %d\n",		fatal_log.current_task.pri);
-				SYS_PRINT("[task] entry: 0x%x\n",	fatal_log.current_task.task);
-
-				SYS_PRINT("\n");
-				SYS_PRINT("[obj] task: %d\n",		fatal_log.current_active_object.des_task_id);
-				SYS_PRINT("[obj] sig: %d\n",		fatal_log.current_active_object.sig);
-				SYS_PRINT("[obj] type: 0x%x\n",		get_msg_type(&fatal_log.current_active_object));
-				SYS_PRINT("[obj] ref count: %d\n",	get_msg_ref_count(&fatal_log.current_active_object));
-				SYS_PRINT("[obj] wait time: %d\n",	fatal_log.current_active_object.dbg_handler.start_exe - fatal_log.current_active_object.dbg_handler.start_post);
-
-				SYS_PRINT("\n");
-				SYS_PRINT("[core] ipsr: %d\n",			fatal_log.m3_core_reg.ipsr);
-				SYS_PRINT("[core] primask: 0x%08X\n",	fatal_log.m3_core_reg.primask);
-				SYS_PRINT("[core] faultmask: 0x%08X\n",	fatal_log.m3_core_reg.faultmask);
-				SYS_PRINT("[core] basepri: 0x%08X\n",	fatal_log.m3_core_reg.basepri);
-				SYS_PRINT("[core] control: 0x%08X\n",	fatal_log.m3_core_reg.control);
-			}
-				break;
-
-			case 'c': {
-				sys_dbg_cpu_dump();
-			}
-				break;
-
-			case 's': {
-				sys_dbg_stack_space_dump();
-			}
-				break;
-
-			default:
-				break;
-			}
-		}
-
-		/* led notify FATAL */
-		led_life_on();
-		sys_ctrl_delay_us(200000);
-		led_life_off();
-		sys_ctrl_delay_us(200000);
-	}
+                led_life_off();
+                sys_ctrl_delay_us(200000);
+        }
 }
 
 void sys_dbg_func_stack_dump(uint32_t* args) {

@@ -61,11 +61,32 @@ enum {
 /*****************************************************************************/
 /* define timer */
 #define AC_LIFE_TASK_TIMER_LED_LIFE_INTERVAL		(1000)
-
+//#define AC_GAME_TASK_TIMER_TICK_INTERVAL (1000)
 /* define signal */
 enum {
 	AC_LIFE_SYSTEM_CHECK = AK_USER_DEFINE_SIG,
 };
+
+
+
+/*****************************************************************************/
+/*  AC game task define
+ */
+/*****************************************************************************/
+/* define timer */
+
+#define AC_GAME_TASK_TIMER_TICK_INTERVAL   (100)
+
+/* define signal */
+enum {
+    AC_GAME_INIT = AK_USER_DEFINE_SIG,
+    AC_GAME_BUTTON_UP,
+    AC_GAME_BUTTON_DOWN,
+    AC_GAME_BUTTON_MODE,
+    AC_GAME_TICK,
+};
+
+
 
 /*****************************************************************************/
 /*  SHELL task define
@@ -161,6 +182,9 @@ enum {
 	AC_DISPLAY_SHOW_MODBUS_PULL_UPDATE,
 	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP
 };
+
+
+
 
 /*****************************************************************************/
 /*  ZIGBEE task define

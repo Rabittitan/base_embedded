@@ -29,14 +29,13 @@ extern "C"
 /******************************************************************************
  *Pin map button
 *******************************************************************************/
-#define BUTTON_DOWN_IO_PIN				(GPIO_Pin_3)
+#define BUTTON_DOWN_IO_PIN				(GPIO_Pin_8)
 #define BUTTON_DOWN_IO_PORT				(GPIOB)
 #define BUTTON_DOWN_IO_CLOCK			(RCC_APB2Periph_GPIOB)
 
-
-#define BUTTON_UP_IO_PIN				(GPIO_Pin_13)
-#define BUTTON_UP_IO_PORT				(GPIOC)
-#define BUTTON_UP_IO_CLOCK				(RCC_APB2Periph_GPIOC)
+#define BUTTON_UP_IO_PIN				(GPIO_Pin_5)
+#define BUTTON_UP_IO_PORT				(GPIOB)
+#define BUTTON_UP_IO_CLOCK			    (RCC_APB2Periph_GPIOB)
 
 #define BUTTON_MODE_IO_PIN				(GPIO_Pin_4)
 #define BUTTON_MODE_IO_PORT				(GPIOB)
@@ -47,7 +46,7 @@ extern "C"
 ******************************************************************************/
 #define LED_LIFE_IO_PIN					(GPIO_Pin_13)
 #define LED_LIFE_IO_PORT				(GPIOC)
-#define LED_LIFE_IO_CLOCK				(RCC_APB2Periph_GPIOB)
+#define LED_LIFE_IO_CLOCK				(RCC_APB2Periph_GPIOC)
 
 /*****************************************************************************
  *Pin map buzzer
@@ -66,7 +65,7 @@ extern "C"
 /*****************************************************************************
  *Pin map nRF24l01
 ******************************************************************************/
-#define NRF_CE_IO_PIN					(GPIO_Pin_8)
+#define NRF_CE_IO_PIN					(GPIO_Pin_7)
 #define NRF_CE_IO_PORT					(GPIOA)
 #define NRF_CE_IO_CLOCK					(RCC_APB2Periph_GPIOA)
 
@@ -114,13 +113,13 @@ extern "C"
 // #define OLED_RES_IO_CLOCK				(RCC_APB2Periph_GPIOA)
 /* I2C  */
 
-#define OLED_SCL_IO_PIN          GPIO_Pin_10
-#define OLED_SCL_IO_PORT         GPIOB
-#define OLED_SCL_IO_CLOCK        RCC_APB2Periph_GPIOB
+#define OLED_SCL_IO_PIN         ( GPIO_Pin_10)
+#define OLED_SCL_IO_PORT         (GPIOB)
+#define OLED_SCL_IO_CLOCK        (RCC_APB2Periph_GPIOB)
 
-#define OLED_SDA_IO_PIN          GPIO_Pin_11 
-#define OLED_SDA_IO_PORT         GPIOB
-#define OLED_SDA_IO_CLOCK        RCC_APB2Periph_GPIOB
+#define OLED_SDA_IO_PIN          (GPIO_Pin_11) 
+#define OLED_SDA_IO_PORT         (GPIOB)
+#define OLED_SDA_IO_CLOCK        (RCC_APB2Periph_GPIOB)
 
 
 
@@ -128,16 +127,16 @@ extern "C"
 /****************************************************************************
  *Pin map UART2
 *****************************************************************************/
-#define USART2_TX_PIN					GPIO_Pin_3
+#define USART2_TX_PIN					GPIO_Pin_2
 #define USART2_TX_GPIO_PORT				GPIOA
 #define USART2_TX_GPIO_CLK				RCC_APB2Periph_GPIOA
-#define USART2_TX_SOURCE				GPIO_PinSource3
+#define USART2_TX_SOURCE				GPIO_PinSource2
 #define USART2_TX_AF					GPIO_Remap_USART1
 
-#define USART2_RX_PIN					GPIO_Pin_2
+#define USART2_RX_PIN					GPIO_Pin_3
 #define USART2_RX_GPIO_PORT				GPIOA
 #define USART2_RX_GPIO_CLK				RCC_APB2Periph_GPIOA
-#define USART2_RX_SOURCE				GPIO_PinSource2
+#define USART2_RX_SOURCE				GPIO_PinSource3
 #define USART2_RX_AF					GPIO_Remap_USART2
 
 #define USART2_CLK						RCC_APB1Periph_USART2
@@ -197,13 +196,6 @@ extern uint8_t flash_transfer(uint8_t);
 /******************************************************************************
 * nfr24l01 IO function
 *******************************************************************************/
-extern void nrf24l01_io_ctrl_init();
-extern void nrf24l01_spi_ctrl_init();
-extern void nrf24l01_ce_low();
-extern void nrf24l01_ce_high();
-extern void nrf24l01_csn_low();
-extern void nrf24l01_csn_high();
-extern uint8_t nrf24l01_spi_rw(uint8_t);
 
 /******************************************************************************
 * adc function
@@ -221,41 +213,34 @@ extern uint16_t adc_bat_io_read(uint8_t);
 /******************************************************************************
 * OLED IO function
 *******************************************************************************/
-// extern void oled_clk_input_mode();
-// extern void oled_clk_output_mode();
-// extern void oled_clk_digital_write_low();
-// extern void oled_clk_digital_write_high();
-// extern int  oled_clk_digital_read();
+extern void oled_clk_input_mode();
+extern void oled_clk_output_mode();
+extern void oled_clk_digital_write_low();
+extern void oled_clk_digital_write_high();
+extern int  oled_clk_digital_read();
 
-// extern void oled_data_input_mode();
-// extern void oled_data_output_mode();
-// extern void oled_data_digital_write_low();
-// extern void oled_data_digital_write_high();
-// extern int  oled_data_digital_read();
+extern void oled_data_input_mode();
+extern void oled_data_output_mode();
+extern void oled_data_digital_write_low();
+extern void oled_data_digital_write_high();
+extern int  oled_data_digital_read();
 
-// extern void oled_res_input_mode();
-// extern void oled_res_output_mode();
-// extern void oled_res_digital_write_low();
-// extern void oled_res_digital_write_high();
-// extern int  oled_res_digital_read();
+extern void oled_res_input_mode();
+extern void oled_res_output_mode();
+extern void oled_res_digital_write_low();
+extern void oled_res_digital_write_high();
+extern int  oled_res_digital_read();
 
 
- extern void oled_i2c_io_init() ;
-// extern void oled_i2c_start();
-// extern void oled_i2c_stop();
-// extern uint8_t oled_i2c_write_byte(uint8_t byte);
+extern void oled_i2c_io_init() ;
+extern void oled_i2c_start();
+extern void oled_i2c_stop();
+extern uint8_t oled_i2c_write_byte(uint8_t byte);
 
 
 /******************************************************************************
 * eeprom function
 *******************************************************************************/
-#define EEPROM_BASE_ADDRESS         (0x08080000)
-#define EEPROM_MAX_SIZE             (0x1000)
-
-extern uint8_t io_eeprom_read(uint32_t, uint8_t*, uint32_t);
-extern uint8_t io_eeprom_write(uint32_t, uint8_t*, uint32_t);
-extern uint8_t io_eeprom_erase(uint32_t, uint32_t);
-
 /******************************************************************************
 * internal flash function
 *******************************************************************************/

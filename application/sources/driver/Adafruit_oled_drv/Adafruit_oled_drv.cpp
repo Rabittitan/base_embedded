@@ -14,11 +14,11 @@ bool Adafruit_oled_drv::initialize() {
 	// setup the pin mode
 	pinMode(m_sda, OUTPUT);
 	pinMode(m_scl, OUTPUT);
-	pinMode(m_res, OUTPUT);
+	//pinMode(m_res, OUTPUT);
 
-	digitalWrite(m_res, LOW);
+	//digitalWrite(m_res, LOW);
 	delay(100); // 100ms delay for the screen to power on.
-	digitalWrite(m_res, HIGH);
+	//digitalWrite(m_res, HIGH);
 	
 	// malloc the framebuffer.
 	m_pFramebuffer = frame_buffer;
