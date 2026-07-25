@@ -1,4 +1,4 @@
-include sources/app/screens/Makefile.mk
+include sources/app/gravity_rush_game/Makefile.mk
 
 CFLAGS		+= -I./sources/app
 CPPFLAGS	+= -I./sources/app
@@ -17,8 +17,11 @@ SOURCES_CPP += sources/app/task_shell.cpp
 SOURCES_CPP += sources/app/task_life.cpp
 SOURCES_CPP += sources/app/task_game.cpp
 SOURCES_CPP += sources/app/task_list.cpp
-# GAME_MINIMAL_DISABLED: SOURCES_CPP += sources/app/task_display.cpp
+SOURCES_CPP += sources/app/task_display.cpp
 
 
 
 SOURCES_CPP += sources/app/task_dbg.cpp
+
+
+

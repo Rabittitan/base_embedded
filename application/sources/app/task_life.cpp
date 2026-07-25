@@ -23,7 +23,7 @@ void task_life(ak_msg_t* msg) {
 #if defined(AK_IO_IRQ_ANALYZER)
 #else
 		/* toggle led indicator */
-		//led_toggle(&led_life);
+		led_toggle(&led_life);
 #endif
 		break;
 

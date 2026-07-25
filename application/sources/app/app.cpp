@@ -38,6 +38,7 @@
 #include "task_list.h"
 #include "task_shell.h"
 #include "task_life.h"
+#include "task_display.h"
 
 
 //#include "task_rf24_if.h"
@@ -364,6 +365,7 @@ void task_polling_console() {
 void app_start_timer() {
 	/* start timer to toggle life led */
 	timer_set(AC_TASK_LIFE_ID, AC_LIFE_SYSTEM_CHECK, AC_LIFE_TASK_TIMER_LED_LIFE_INTERVAL, TIMER_PERIODIC);
+	timer_set(AC_TASK_GAME_ID, AC_DISPLAY_INITIAL, AC_DISPLAY_INITIAL_INTERVAL, TIMER_ONE_SHOT);
 
 }
 
@@ -378,11 +380,11 @@ void app_init_state_machine() {
  * used for app tasks
  */
 void app_task_init() {
-//	SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
+	SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
 	
 	// led_life_on();
     // sys_ctrl_delay_us(1000000);
-
+	//task_life(msg);
 	task_post_pure_msg(AC_TASK_GAME_ID,AC_GAME_INIT);
 	// led_life_off();
 

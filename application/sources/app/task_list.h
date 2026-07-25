@@ -28,9 +28,30 @@ enum {
         AC_TASK_DBG_ID,
 
         AC_TASK_GAME_ID,
+        AC_TASK_DISPLAY_ID,
+
+        /*****************************************************************************/
+        /*  AC game task define
+        */
+        /*****************************************************************************/
+        AC_GAME_INIT = AK_USER_DEFINE_SIG,
+        AC_GAME_BUTTON_UP,
+        AC_GAME_BUTTON_DOWN,
+        AC_GAME_BUTTON_MODE,
+        AC_GAME_TICK,
+
+
 
         AK_TASK_EOT_ID,
+
+
+
 };
+
+
+
+
+
 
 /*****************************************************************************/
 /* POLLING TASK ID */

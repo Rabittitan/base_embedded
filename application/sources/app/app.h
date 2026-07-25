@@ -69,24 +69,6 @@ enum {
 
 
 
-/*****************************************************************************/
-/*  AC game task define
- */
-/*****************************************************************************/
-/* define timer */
-
-#define AC_GAME_TASK_TIMER_TICK_INTERVAL   (100)
-
-/* define signal */
-enum {
-    AC_GAME_INIT = AK_USER_DEFINE_SIG,
-    AC_GAME_BUTTON_UP,
-    AC_GAME_BUTTON_DOWN,
-    AC_GAME_BUTTON_MODE,
-    AC_GAME_TICK,
-};
-
-
 
 /*****************************************************************************/
 /*  SHELL task define
@@ -180,7 +162,9 @@ enum {
 	AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SNOW_MOVING_UPDATE,
 	AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SLEEP,
 	AC_DISPLAY_SHOW_MODBUS_PULL_UPDATE,
-	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP
+	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP,
+	//button 
+	AC_DISPLAY_BUTTON_MODE_HOLD
 };
 
 

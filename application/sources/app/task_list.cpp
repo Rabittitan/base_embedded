@@ -3,69 +3,53 @@
 
 const task_t app_task_table[] = {
 
-        /*************************************************************************/
-        /* AK CORE */
-        /*************************************************************************/
-        {
-                TASK_TIMER_TICK_ID,
-                TASK_PRI_LEVEL_7,
-                task_timer_tick
-        },
+    /*************************************************************************/
+    /* AK CORE */
+    /*************************************************************************/
+    {
+        TASK_TIMER_TICK_ID, 
+        TASK_PRI_LEVEL_7,
+        task_timer_tick},
 
-        /*************************************************************************/
-        /* MINIMAL APPLICATION */
-        /*************************************************************************/
-        {
-                AC_TASK_SYSTEM_ID,
-                TASK_PRI_LEVEL_2,
-                task_system
-        },
+    /*************************************************************************/
+    /* MINIMAL APPLICATION */
+    /*************************************************************************/
+    {
+        AC_TASK_SYSTEM_ID,
+        TASK_PRI_LEVEL_2,
+        task_system},
 
-        {
-                AC_TASK_SHELL_ID,
-                TASK_PRI_LEVEL_2,
-                task_shell
-        },
+    {AC_TASK_SHELL_ID,
+     TASK_PRI_LEVEL_2,
+     task_shell},
 
-        {
-                AC_TASK_LIFE_ID,
-                TASK_PRI_LEVEL_6,
-                task_life
-        },
+    {AC_TASK_LIFE_ID,
+     TASK_PRI_LEVEL_6,
+     task_life},
 
-        {
-                AC_TASK_DBG_ID,
-                TASK_PRI_LEVEL_4,
-                task_dbg
-        },
-      // irp LEVEL 
-        {
-                AC_TASK_GAME_ID,
-                TASK_PRI_LEVEL_3,
-                task_game
-        },
+    {AC_TASK_DBG_ID,
+     TASK_PRI_LEVEL_4,
+     task_dbg},
+    // irp LEVEL
+    {
+        AC_TASK_GAME_ID,
+        TASK_PRI_LEVEL_3,
+        task_game},
 
-        /*************************************************************************/
-        /* END OF TABLE */
-        /*************************************************************************/
-        {
-                AK_TASK_EOT_ID,
-                TASK_PRI_LEVEL_0,
-                (pf_task)0
-        }
-};
+    /*************************************************************************/
+    /* END OF TABLE */
+    /*************************************************************************/
+    {
+        AK_TASK_EOT_ID,
+        TASK_PRI_LEVEL_0,
+        (pf_task)0}};
 
 const task_polling_t app_task_polling_table[] = {
 
-        {
-                AC_TASK_POLLING_CONSOLE_ID,
-                AK_ENABLE,
-                task_polling_console
-        },
+    {AC_TASK_POLLING_CONSOLE_ID,
+     AK_ENABLE,
+     task_polling_console},
 
-        {
-                AK_TASK_POLLING_EOT_ID,
-                AK_DISABLE,
-                (pf_task_polling)0
-        }
-};
+    {AK_TASK_POLLING_EOT_ID,
+     AK_DISABLE,
+     (pf_task_polling)0}};
