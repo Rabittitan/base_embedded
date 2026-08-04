@@ -9,7 +9,7 @@ extern "C"
 #include <stdint.h>
 #include "io_cfg.h"
 #include "buzzer_music.h"
-
+#include "app_dbg.h"
 #define BUZZER_SILENT_ON      (0U)
 #define BUZZER_SILENT_OFF     (1U)
 

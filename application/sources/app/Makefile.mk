@@ -15,11 +15,10 @@ SOURCES_CPP += sources/app/shell.cpp
 
 SOURCES_CPP += sources/app/task_shell.cpp
 SOURCES_CPP += sources/app/task_life.cpp
-SOURCES_CPP += sources/app/task_game.cpp
 SOURCES_CPP += sources/app/task_list.cpp
 SOURCES_CPP += sources/app/task_display.cpp
 
-
+SOURCES_CPP += sources/app/task_mpu.cpp
 
 SOURCES_CPP += sources/app/task_dbg.cpp
 

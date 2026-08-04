@@ -1,0 +1,13 @@
+openocd -f interface/stlink.cfg -c "set CPUTAPID 0x2ba01477" -f target/stm32f1x.cfg
+ 
+
+cd ~/workspace/Sources/base_embedded/application
+arm-none-eabi-gdb build_ak-base-kit-stm32f103-application/ak-base-kit-stm32f103-application.axf
+
+target extended-remote :3333
+monitor reset halt
+load
+
+
+
+compare-sections

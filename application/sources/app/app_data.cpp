@@ -4,3 +4,6 @@
 #if defined (TASK_MBMASTER_EN)
 xMBHandle xMBMMaster;
 #endif
+
+
+mpu6050_data_t imu_data;

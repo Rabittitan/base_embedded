@@ -5,3 +5,8 @@ include sources/driver/led/Makefile.mk
 include sources/driver/AsyncDelay/Makefile.mk
 include sources/driver/gpio/Makefile.mk
 include sources/driver/buzzer/Makefile.mk
+
+include sources/driver/i2c_soft/Makefile.mk
+# include mpu6050
+include sources/driver/Mpu6050_drv/Makefile.mk
+

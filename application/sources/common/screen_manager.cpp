@@ -40,7 +40,7 @@ static void scr_mng_render_screen() {
 	}
 	else {
 		// Timer set to trigger next rendering when render interval is reached
-		timer_set(	AC_TASK_GAME_ID, \
+		timer_set(	AC_TASK_DISPLAY_ID, \
 					AC_DISPLAY_RENDER_SCREEN, \
 					AC_DISPLAY_MINIMUM_SCREEN_RENDER_INTERVAL_MS - time_diff, \
 					TIMER_ONE_SHOT);
@@ -115,7 +115,7 @@ void scr_mng_back() {
 }
 
 void scr_mng_contain_screen_none_update_mark() {
-	timer_remove_attr(AC_TASK_GAME_ID, AC_DISPLAY_RENDER_SCREEN);
+	timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 }
 
 screen_f scr_mng_get_current_screen() {

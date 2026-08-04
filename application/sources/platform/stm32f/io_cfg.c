@@ -265,110 +265,23 @@ void oled_i2c_io_init() {
 
 
 /******************************************************************************
-* ssd1306 oled IO function
+* I2C IO function
 *******************************************************************************/
-// void oled_clk_input_mode() {
-// 	GPIO_InitTypeDef    GPIO_InitStructure;
+void i2c_io_init() {
+    GPIO_InitTypeDef GPIO_InitStructure;
 
-// 	RCC_AHBPeriphClockCmd(OLED_CLK_IO_CLOCK, ENABLE);
-// 	GPIO_InitStructure.GPIO_Pin = OLED_CLK_IO_PIN;
-// 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-// 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-// 	GPIO_Init(OLED_CLK_IO_PORT, &GPIO_InitStructure);
-// }
+    RCC_APB2PeriphClockCmd(I2C_SCL_IO_CLOCK | I2C_SDA_IO_CLOCK, ENABLE);
 
-// void oled_clk_output_mode() {
-// 	GPIO_InitTypeDef    GPIO_InitStructure;
+   
+    GPIO_InitStructure.GPIO_Pin = I2C_SCL_IO_PIN | I2C_SDA_IO_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD; 
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(I2C_SCL_IO_PORT, &GPIO_InitStructure);
 
-// 	RCC_AHBPeriphClockCmd(OLED_CLK_IO_CLOCK, ENABLE);
-
-// 	GPIO_InitStructure.GPIO_Pin = OLED_CLK_IO_PIN;
-// 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
-// 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-// 	GPIO_Init(OLED_CLK_IO_PORT, &GPIO_InitStructure);
-// }
-
-// void oled_clk_digital_write_low() {
-// 	GPIO_ResetBits(OLED_CLK_IO_PORT,OLED_CLK_IO_PIN);
-// }
-
-// void oled_clk_digital_write_high() {
-// 	GPIO_SetBits(OLED_CLK_IO_PORT,OLED_CLK_IO_PIN);
-// }
-
-// int oled_clk_digital_read() {
-// 	return (int)(GPIO_ReadInputDataBit(OLED_CLK_IO_PORT, OLED_CLK_IO_PIN));
-// }
-
-// void oled_data_input_mode() {
-// 	GPIO_InitTypeDef    GPIO_InitStructure;
-
-// 	RCC_AHBPeriphClockCmd(OLED_DATA_IO_CLOCK, ENABLE);
-// 	GPIO_InitStructure.GPIO_Pin = OLED_DATA_IO_PIN;
-// 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-// 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-// 	GPIO_Init(OLED_DATA_IO_PORT, &GPIO_InitStructure);
-// }
-
-// void oled_data_output_mode() {
-// 	GPIO_InitTypeDef    GPIO_InitStructure;
-// 	RCC_AHBPeriphClockCmd(OLED_DATA_IO_CLOCK, ENABLE);
-// 	GPIO_InitStructure.GPIO_Pin = OLED_DATA_IO_PIN;
-// 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-
-// 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	
-// 	GPIO_Init(OLED_DATA_IO_PORT, &GPIO_InitStructure);
-// }
-
-// void oled_data_digital_write_low() {
-// 	GPIO_ResetBits(OLED_DATA_IO_PORT, OLED_DATA_IO_PIN);
-// }
-
-// void oled_data_digital_write_high() {
-// 	GPIO_SetBits(OLED_DATA_IO_PORT, OLED_DATA_IO_PIN);
-// }
-
-// int oled_data_digital_read() {
-// 	return (int)(GPIO_ReadInputDataBit(OLED_DATA_IO_PORT, OLED_DATA_IO_PIN));
-// }
-
-// /* SH1106 driver */
-// void oled_res_input_mode() {
-// 	GPIO_InitTypeDef    GPIO_InitStructure;
-
-// 	RCC_AHBPeriphClockCmd(OLED_RES_IO_CLOCK, ENABLE);
-// 	GPIO_InitStructure.GPIO_Pin = OLED_RES_IO_PIN;
-// 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-	
-// 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-// 	GPIO_Init(OLED_RES_IO_PORT, &GPIO_InitStructure);
-// }
-
-// void oled_res_output_mode() {
-// 	GPIO_InitTypeDef    GPIO_InitStructure;
-// 	RCC_AHBPeriphClockCmd(OLED_RES_IO_CLOCK, ENABLE);
-// 	GPIO_InitStructure.GPIO_Pin = OLED_RES_IO_PIN;
-// 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-// 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-// 	GPIO_Init(OLED_RES_IO_PORT, &GPIO_InitStructure);
-// }
-
-// void oled_res_digital_write_low() {
-// 	GPIO_ResetBits(OLED_RES_IO_PORT, OLED_RES_IO_PIN);
-// }
-
-// void oled_res_digital_write_high() {
-// 	GPIO_SetBits(OLED_RES_IO_PORT, OLED_RES_IO_PIN);
-// }
-
-// int oled_res_digital_read() {
-// 	return (int)(GPIO_ReadInputDataBit(OLED_RES_IO_PORT, OLED_RES_IO_PIN));
-// }
-
-
-
-
+    
+    GPIO_SetBits(I2C_SCL_IO_PORT, I2C_SCL_IO_PIN);
+    GPIO_SetBits(I2C_SDA_IO_PORT, I2C_SDA_IO_PIN);
+}
 
 
 void internal_flash_unlock() {

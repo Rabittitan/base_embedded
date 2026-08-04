@@ -26,19 +26,8 @@ enum {
         AC_TASK_SHELL_ID,
         AC_TASK_LIFE_ID,
         AC_TASK_DBG_ID,
-
-        AC_TASK_GAME_ID,
         AC_TASK_DISPLAY_ID,
-
-        /*****************************************************************************/
-        /*  AC game task define
-        */
-        /*****************************************************************************/
-        AC_GAME_INIT = AK_USER_DEFINE_SIG,
-        AC_GAME_BUTTON_UP,
-        AC_GAME_BUTTON_DOWN,
-        AC_GAME_BUTTON_MODE,
-        AC_GAME_TICK,
+        AC_TASK_MPU_ID,
 
 
 
@@ -72,7 +61,8 @@ extern void task_shell(ak_msg_t*);
 extern void task_life(ak_msg_t*);
 extern void task_dbg(ak_msg_t*);
 extern void task_game(ak_msg_t*);
-
+extern void task_display(ak_msg_t*);
+extern void task_mpu(ak_msg_t*);
 /*****************************************************************************/
 /* POLLING ENTRY POINT */
 /*****************************************************************************/

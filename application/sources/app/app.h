@@ -8,6 +8,8 @@
 #ifndef __APP_H__
 #define __APP_H__
 
+
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -20,7 +22,7 @@ extern "C"
 
 #include "app_if.h"
 #include "app_eeprom.h"
-#include "app_data.h"
+
 
 /*****************************************************************************/
 /* SYSTEM task define
@@ -145,7 +147,7 @@ enum {
 #define AC_DISPLAY_MINIMUM_SCREEN_RENDER_INTERVAL_MS				(50) /* 50ms => Max 20 FPS */
 #define AC_DISPLAY_IDLE_INTERVAL									(15000)
 #define AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL					(120)
-
+#define AC_MPU_INTERVAL												(20)	
 /* define signal */
 enum {
 	AC_DISPLAY_RENDER_SCREEN = AK_SYS_DEFINE_SIG,
@@ -153,7 +155,7 @@ enum {
 	AC_DISPLAY_BUTON_MODE_PRESSED,
 	AC_DISPLAY_BUTON_UP_PRESSED,
 	AC_DISPLAY_BUTON_DOWN_PRESSED,
-	AC_DISPLAY_SHOW_LOGO,
+	//AC_DISPLAY_SHOW_MENU,
 	AC_DISPLAY_SHOW_IDLE,
 	AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE,
 	AC_DISPLAY_WELCOME_TEXT_ANIM_TICK,
@@ -164,11 +166,19 @@ enum {
 	AC_DISPLAY_SHOW_MODBUS_PULL_UPDATE,
 	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP,
 	//button 
-	AC_DISPLAY_BUTTON_MODE_HOLD
+	AC_DISPLAY_SHOW_TANK_MOVING_UPDATE
 };
 
-
-
+/*****************************************************************************/
+/*  MPU task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum{
+	AC_MPU6050_INIT,
+    AC_MPU6050_UPDATE
+};
 
 /*****************************************************************************/
 /*  ZIGBEE task define
@@ -212,7 +222,14 @@ extern void* app_get_boot_share_data();
 extern int  main_app();
 
 #ifdef __cplusplus
+
+
 }
 #endif
+
+
+
+#include "app_data.h"
+
 
 #endif //__APP_H__

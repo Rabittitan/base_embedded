@@ -8,6 +8,10 @@
 #include "app.h"
 #include "buzzer.h"
 
+#include "mpu6050.h"
+
+
+
 #if defined (TASK_MBMASTER_EN)
 #include "mbport.h"
 #include "mbm.h"
@@ -54,5 +58,10 @@ typedef struct {
 #if defined (TASK_MBMASTER_EN)
 extern xMBHandle xMBMMaster;
 #endif
+
+
+
+
+extern mpu6050_data_t imu_data;
 
 #endif //__APP_DATA_H__

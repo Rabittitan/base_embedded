@@ -1,4 +1,5 @@
 #include "menu_screen.h"
+#include "setting_screen.h"
 
 static uint8_t menu_index = 0; 
 // ================ (DRAW)========================
@@ -54,51 +55,52 @@ void scr_menu_handle(ak_msg_t* msg){
     //msg -> sig:  (signal) from (Active Kernel).
     switch (msg -> sig){
         //when this screen active
-        // case SCREEN_ENTRY:
-        //    menu_index = 0; 
-        //     APP_DBG(">> Entered BANNER GAME Screen!\n");
-        //     BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+        case SCREEN_ENTRY:
+           menu_index = 0; 
+            APP_DBG(">> Entered BANNER GAME Screen!\n");
+            BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 
-        //     // CLEAR ALL TIMER UPDATE 
-        //     timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_TANK_MOVING_UPDATE);
-        //     break;
+            // CLEAR ALL TIMER UPDATE 
+            timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_TANK_MOVING_UPDATE);
+            break;
 
        
-        // case AC_DISPLAY_SHOW_TANK_MOVING_UPDATE:
+        case AC_DISPLAY_SHOW_TANK_MOVING_UPDATE:
         //     break;
 
-        // //when button "MODE" released
-        // case AC_DISPLAY_BUTON_MODE_RELEASED: 
-        //     if (menu_index == 0) {
-        //         // START GAME: (scr_game)
-        //         SCREEN_TRAN(scr_game_handle, &scr_game); 
-        //     }
-        //     else if (menu_index == 1) {
-        //         // goto TOP SCORE 
-        //         SCREEN_TRAN(scr_topscore_game_handle, &scr_topscore_game);
-        //     }
-        //     else if (menu_index == 2) {
-        //         // EXIT game
-        //         SCREEN_TRAN(scr_info_handle, &scr_info);
-        //     }
-        //     BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-        //     break;
-        // //when button UP released
-        // case AC_DISPLAY_BUTON_UP_RELEASED:
-        //     if (menu_index > 0) menu_index--;
-        //     else menu_index = 2; 
-        //     BUZZER_PlaySound(BUZZER_SOUND_CLICK); 
-        //     break;
-        // //when button DOWN released
-        // case AC_DISPLAY_BUTON_DOWN_RELEASED:
-        //     if (menu_index < 2) menu_index++;
-        //     else menu_index = 0; 
-        //     BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-        //     break;
+        //when button "MODE" released
+        case AC_DISPLAY_BUTON_MODE_PRESSED: 
+            if (menu_index == 0) {
+                // START GAME: (scr_game)
+              //  SCREEN_TRAN(scr_game_handle, &scr_game); 
+              SCREEN_TRAN(scr_startup_handle, &scr_startup);
+            }
+            else if (menu_index == 1) {
+                // goto TOP SCORE 
+                SCREEN_TRAN(scr_data_handle, &scr_data);
+            }
+            else if (menu_index == 2) {
+                // EXIT game
+                SCREEN_TRAN(scr_startup_handle, &scr_startup);
+            }
+            BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+            break;
+        //when button UP released
+        case AC_DISPLAY_BUTON_UP_PRESSED:
+            if (menu_index > 0) menu_index--;
+            else menu_index = 2; 
+            BUZZER_PlaySound(BUZZER_SOUND_CLICK); 
+            break;
+        //when button DOWN released
+        case AC_DISPLAY_BUTON_DOWN_PRESSED:
+            if (menu_index < 2) menu_index++;
+            else menu_index = 0; 
+            BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+            break;
 
         
-        // default:
-        //     break;
+        default:
+            break;
     }
 }
 

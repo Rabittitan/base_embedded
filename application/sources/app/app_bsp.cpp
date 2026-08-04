@@ -21,7 +21,7 @@ void btn_mode_callback(void* b) {
 	switch (me_b->state) {
 	case BUTTON_SW_STATE_PRESSED: {
 		APP_DBG("[btn_mode_callback] BUTTON_SW_STATE_PRESSED\n");
-		task_post_pure_msg(AC_TASK_GAME_ID, AC_GAME_BUTTON_MODE);
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_BUTON_MODE_PRESSED);
 	}
 		break;
 
@@ -40,7 +40,8 @@ void btn_up_callback(void* b) {
 	switch (me_b->state) {
 	case BUTTON_SW_STATE_PRESSED: {
 		APP_DBG("[btn_up_callback] BUTTON_SW_STATE_PRESSED\n");
-		task_post_pure_msg(AC_TASK_GAME_ID, AC_GAME_BUTTON_UP);
+		//task_post_pure_msg(AC_TASK_GAME_ID, AC_GAME_BUTTON_UP);
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_BUTON_UP_PRESSED);
 	}
 		break;
 
@@ -59,7 +60,7 @@ void btn_down_callback(void* b) {
 	switch (me_b->state) {
 	case BUTTON_SW_STATE_PRESSED: {
 		APP_DBG("[btn_down_callback] BUTTON_SW_STATE_PRESSED\n");
-	    task_post_pure_msg(AC_TASK_GAME_ID, AC_GAME_BUTTON_DOWN);
+	   task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_BUTON_DOWN_PRESSED);
 	}
 		break;
 

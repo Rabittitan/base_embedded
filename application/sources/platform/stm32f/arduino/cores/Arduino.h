@@ -10,6 +10,7 @@
 #include "sys_io.h"
 #include "message.h"
 #include "sys_cfg.h"
+// #include "wiring_digital.cpp"
 
 #define ARDUINO 100
 

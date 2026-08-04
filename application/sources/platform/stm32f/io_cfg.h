@@ -53,10 +53,8 @@ extern "C"
 ******************************************************************************/
 #define BUZZER_IO_PIN					(GPIO_Pin_0)
 #define BUZZER_IO_PORT					(GPIOB)
-#define BUZZER_IO_CLOCK					(RCC_APB2Periph_GPIOB)
+#define BUZZER_IO_CLOCK					(RCC_APB2Periph_GPIOB) 
 
-// #define BUZZER_IO_AF					(GPIO_AF_TIM3)
-// #define BUZZER_IO_SOURCE				(GPIO_PinSource0)
 
 #define BUZZER_TIM						(TIM3)
 #define BUZZER_TIM_PERIPH				(RCC_APB1Periph_TIM3)
@@ -65,17 +63,17 @@ extern "C"
 /*****************************************************************************
  *Pin map nRF24l01
 ******************************************************************************/
-#define NRF_CE_IO_PIN					(GPIO_Pin_7)
-#define NRF_CE_IO_PORT					(GPIOA)
-#define NRF_CE_IO_CLOCK					(RCC_APB2Periph_GPIOA)
+// #define NRF_CE_IO_PIN					(GPIO_Pin_7)
+// #define NRF_CE_IO_PORT					(GPIOA)
+// #define NRF_CE_IO_CLOCK					(RCC_APB2Periph_GPIOA)
 
-#define NRF_CSN_IO_PIN					(GPIO_Pin_9)
-#define NRF_CSN_IO_PORT					(GPIOB)
-#define NRF_CSN_IO_CLOCK				(RCC_APB2Periph_GPIOB)
+// #define NRF_CSN_IO_PIN					(GPIO_Pin_9)
+// #define NRF_CSN_IO_PORT					(GPIOB)
+// #define NRF_CSN_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
-#define NRF_IRQ_IO_PIN					(GPIO_Pin_1)
-#define NRF_IRQ_IO_PORT					(GPIOB)
-#define NRF_IRQ_IO_CLOCK				(RCC_APB2Periph_GPIOB)
+// #define NRF_IRQ_IO_PIN					(GPIO_Pin_1)
+// #define NRF_IRQ_IO_PORT					(GPIOB)
+// #define NRF_IRQ_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 /*****************************************************************************
  *Pin map Flash W2508
@@ -167,6 +165,22 @@ extern "C"
 #define RS485_DIR_IO_PORT				(GPIOA)
 #define RS485_DIR_IO_CLOCK				(RCC_APB2Periph_GPIOA)
 
+
+
+/******************************************************************************
+* I2C IO CONFIG (0x68)
+*******************************************************************************/
+#define I2C_SCL_IO_PIN         ( GPIO_Pin_10)
+#define I2C_SCL_IO_PORT         (GPIOB)
+#define I2C_SCL_IO_CLOCK        (RCC_APB2Periph_GPIOB)
+
+#define I2C_SDA_IO_PIN          (GPIO_Pin_11) 
+#define I2C_SDA_IO_PORT         (GPIOB)
+#define I2C_SDA_IO_CLOCK        (RCC_APB2Periph_GPIOB)
+
+
+
+
 /******************************************************************************
 * button function
 *******************************************************************************/
@@ -236,6 +250,18 @@ extern void oled_i2c_io_init() ;
 extern void oled_i2c_start();
 extern void oled_i2c_stop();
 extern uint8_t oled_i2c_write_byte(uint8_t byte);
+
+
+
+/******************************************************************************
+* I2C IO function
+*******************************************************************************/
+extern void i2c_io_init();
+
+
+
+
+
 
 
 /******************************************************************************
