@@ -126,16 +126,16 @@ void sys_cfg_console() {
 	sys_ctrl_shell_sw_to_block();
 }
 
-// void sys_cfg_svc() {
-// 	NVIC_InitTypeDef NVIC_InitStructure;
-// 	//NVIC_InitStructure.NVIC_IRQChannel = SVC_IRQn;
-// 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = IRQ_PRIO_SYS_SVC;
-// 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-// 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-// 	NVIC_Init(&NVIC_InitStructure);
+void sys_cfg_svc() {
+	NVIC_InitTypeDef NVIC_InitStructure;
+	NVIC_InitStructure.NVIC_IRQChannel = RCC_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = IRQ_PRIO_SYS_SVC;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
 
-// 	NVIC_SetPriority(SVC_IRQn, IRQ_PRIO_SYS_SVC);
-// }
+	NVIC_SetPriority(RCC_IRQn, IRQ_PRIO_SYS_SVC);
+}
 
 void sys_cfg_pendsv() {
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -378,7 +378,7 @@ void sys_ctr_stop_mcu() {
 }
 
 uint32_t sys_ctr_get_exception_number() {
-	volatile uint32_t exception_number = (uint32_t)__get_IPSR();
+	volatile uint32_t exception_number = (uint32_t)__get_PSP();
 	return exception_number;
 }
 
@@ -450,6 +450,8 @@ void sys_ctrl_soft_watchdog_init(uint32_t time_out) {
 	TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE);
 	TIM_Cmd(TIM7, ENABLE);
 }
+
+void boot_from_system_memory(void) { /* empty */ }
 
 void sys_ctrl_soft_watchdog_reset() {
 	ENTRY_CRITICAL();

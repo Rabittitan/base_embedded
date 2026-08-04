@@ -1,5 +1,6 @@
-CPPFLAGS += -I./sources/platform/stm32l/arduino/libraries/SPI
+CPPFLAGS += -I./sources/platform/stm32f/arduino/libraries/SPI
 
-VPATH += sources/platform/stm32l/arduino/libraries/SPI
+VPATH += sources/platform/stm32f/arduino/libraries/SPI
 
-SOURCES_CPP += sources/platform/stm32l/arduino/libraries/SPI/SPI.cpp
+SOURCES_CPP += sources/platform/stm32f/arduino/libraries/SPI/SPI.cpp
+

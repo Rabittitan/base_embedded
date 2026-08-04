@@ -19,6 +19,13 @@
 
 #include "system.h"
 
+#include "stm32f10x_spi.h"
+
+#include "stm32f10x_flash.h"
+
+
+
+
 //#pragma GCC optimize ("O3")
 
 /******************************************************************************
@@ -80,10 +87,10 @@ void led_life_init() {
 	RCC_AHBPeriphClockCmd(LED_LIFE_IO_CLOCK, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = LED_LIFE_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	//GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	//GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(LED_LIFE_IO_PORT, &GPIO_InitStructure);
 }
 
@@ -107,34 +114,29 @@ void nrf24l01_io_ctrl_init() {
 	/* GPIOA Periph clock enable */
 	RCC_AHBPeriphClockCmd(NRF_CE_IO_CLOCK, ENABLE);
 	RCC_AHBPeriphClockCmd(NRF_CSN_IO_CLOCK, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
 	/*CE -> PA8*/
 	GPIO_InitStructure.GPIO_Pin = NRF_CE_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	
 	GPIO_Init(NRF_CE_IO_PORT, &GPIO_InitStructure);
 
 	/*CNS -> PB9*/
 	GPIO_InitStructure.GPIO_Pin = NRF_CSN_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(NRF_CSN_IO_PORT, &GPIO_InitStructure);
 
 	/* IRQ -> PB1 */
 	GPIO_InitStructure.GPIO_Pin = NRF_IRQ_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(NRF_IRQ_IO_PORT, &GPIO_InitStructure);
 
-	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource1);
+	//SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource1);
 
 	EXTI_InitStruct.EXTI_Line = EXTI_Line1;
 	EXTI_InitStruct.EXTI_LineCmd = ENABLE;
@@ -149,22 +151,23 @@ void nrf24l01_io_ctrl_init() {
 	NVIC_Init(&NVIC_InitStruct);
 }
 
+
+
 void nrf24l01_spi_ctrl_init() {
 	GPIO_InitTypeDef  GPIO_InitStructure;
 	SPI_InitTypeDef   SPI_InitStructure;
 
 	/*!< SPI GPIO Periph clock enable */
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
 	/*!< SPI Periph clock enable */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 
 	/*!< Configure SPI pins: SCK */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	/*!< Configure SPI pins: MISO */
@@ -176,13 +179,13 @@ void nrf24l01_spi_ctrl_init() {
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	/* Connect PXx to SPI_SCK */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AFIODeInit);
 
 	/* Connect PXx to SPI_MISO */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AFIODeInit);
 
 	/* Connect PXx to SPI_MOSI */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AFIODeInit);
 
 	/*!< SPI Config */
 	SPI_DeInit(SPI1);
@@ -200,6 +203,7 @@ void nrf24l01_spi_ctrl_init() {
 
 	SPI_Cmd(SPI1, ENABLE); /*!< SPI enable */
 }
+
 
 void nrf24l01_ce_low() {
 	GPIO_ResetBits(NRF_CE_IO_PORT, NRF_CE_IO_PIN);
@@ -253,10 +257,10 @@ void flash_io_ctrl_init() {
 	RCC_AHBPeriphClockCmd(FLASH_CE_IO_CLOCK, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = FLASH_CE_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	
 	GPIO_Init(FLASH_CE_IO_PORT, &GPIO_InitStructure);
 }
 
@@ -311,9 +315,9 @@ void io_cfg_adc1(void) {
 	RCC_APB2PeriphClockCmd(BAT_ADC_CLOCK , ENABLE);
 	ADC_InitStructure.ADC_ScanConvMode = DISABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode =DISABLE;
-	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-	ADC_InitStructure.ADC_NbrOfConversion = 2;
+	ADC_InitStructure.ADC_NbrOfChannel = 2;
 	ADC_Init(ADC1, &ADC_InitStructure);
 	ADC_Cmd(ADC1, ENABLE);
 }
@@ -323,18 +327,18 @@ void adc_bat_io_cfg() {
 	RCC_AHBPeriphClockCmd(BAT_ADC_IO_CLOCK, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = BAT_ADC_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+	
 	GPIO_Init(BAT_ADC_PORT, &GPIO_InitStructure);
 }
 
-uint16_t adc_bat_io_read(uint8_t chanel) {
-	ADC_RegularChannelConfig(ADC1, chanel, 1, ADC_SampleTime_4Cycles);
-	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_ADONS) == RESET);
-
-	ADC_SoftwareStartConv(ADC1);
-	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-	return ADC_GetConversionValue(ADC1);
+uint16_t adc_bat_io_read(uint8_t channel)
+{
+    ADC_RegularChannelConfig(ADC1, channel, 1, ADC_SampleTime_7Cycles5);
+    ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+    return ADC_GetConversionValue(ADC1);
 }
 
 uint32_t sys_ctr_get_vbat_voltage() {
@@ -343,12 +347,12 @@ uint32_t sys_ctr_get_vbat_voltage() {
 	uint32_t vbatX1000;
 
 	ADC_TempSensorVrefintCmd(ENABLE);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_Vrefint, 1, ADC_SampleTime_384Cycles);
+	// ADC_RegularChannelConfig(ADC1, ADC_Channel_Vrefint, 1, ADC_SampleTime_384Cycles);
 
-	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_ADONS) == RESET);
-	sys_ctrl_delay_ms(10);
+	// while (ADC_GetFlagStatus(ADC1, ADC_FLAG_ADONS) == RESET);
+	// sys_ctrl_delay_ms(10);
 
-	ADC_SoftwareStartConv(ADC1);
+	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 
 	vref_data += ADC_GetConversionValue(ADC1);
@@ -369,12 +373,12 @@ uint32_t sys_ctr_get_mcu_temperature() {
 	uint32_t temperature, TS_DATA;
 
 	ADC_TempSensorVrefintCmd(ENABLE);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 1, ADC_SampleTime_384Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 1, ADC_SampleTime_28Cycles5);
 
-	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_ADONS) == RESET);
+	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 	sys_ctrl_delay_ms(10);
 
-	ADC_SoftwareStartConv(ADC1);
+	ADC_SoftwareStartConvCmd(ADC1,ENABLE);
 	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 
 	TS_DATA = ADC_GetConversionValue(ADC1);
@@ -391,9 +395,7 @@ void oled_clk_input_mode() {
 
 	RCC_AHBPeriphClockCmd(OLED_CLK_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin = OLED_CLK_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(OLED_CLK_IO_PORT, &GPIO_InitStructure);
 }
@@ -404,10 +406,8 @@ void oled_clk_output_mode() {
 	RCC_AHBPeriphClockCmd(OLED_CLK_IO_CLOCK, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = OLED_CLK_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(OLED_CLK_IO_PORT, &GPIO_InitStructure);
 }
 
@@ -428,9 +428,7 @@ void oled_data_input_mode() {
 
 	RCC_AHBPeriphClockCmd(OLED_DATA_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin = OLED_DATA_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(OLED_DATA_IO_PORT, &GPIO_InitStructure);
 }
@@ -439,10 +437,10 @@ void oled_data_output_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
 	RCC_AHBPeriphClockCmd(OLED_DATA_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin = OLED_DATA_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	
 	GPIO_Init(OLED_DATA_IO_PORT, &GPIO_InitStructure);
 }
 
@@ -464,9 +462,8 @@ void oled_res_input_mode() {
 
 	RCC_AHBPeriphClockCmd(OLED_RES_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin = OLED_RES_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+	
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(OLED_RES_IO_PORT, &GPIO_InitStructure);
 }
@@ -475,10 +472,8 @@ void oled_res_output_mode() {
 	GPIO_InitTypeDef    GPIO_InitStructure;
 	RCC_AHBPeriphClockCmd(OLED_RES_IO_CLOCK, ENABLE);
 	GPIO_InitStructure.GPIO_Pin = OLED_RES_IO_PIN;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(OLED_RES_IO_PORT, &GPIO_InitStructure);
 }
 
@@ -535,10 +530,11 @@ uint8_t io_eeprom_write(uint32_t address, uint8_t* pbuf, uint32_t len) {
 			index++;
 		}
 		else {
-			FLASH_ClearFlag(FLASH_FLAG_EOP|FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR
-							| FLASH_FLAG_SIZERR | FLASH_FLAG_OPTVERR);
+			FLASH_ClearFlag(FLASH_FLAG_EOP| FLASH_FLAG_WRPRTERR| FLASH_FLAG_PGERR
+							| FLASH_FLAG_BSY | FLASH_FLAG_OPTERR);
 		}
 	}
+
 
 	DATA_EEPROM_Lock();
 
@@ -568,8 +564,8 @@ uint8_t io_eeprom_erase(uint32_t address, uint32_t len) {
 			index++;
 		}
 		else {
-			FLASH_ClearFlag(FLASH_FLAG_EOP|FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR
-							| FLASH_FLAG_SIZERR | FLASH_FLAG_OPTVERR);
+			FLASH_ClearFlag(FLASH_FLAG_EOP| FLASH_FLAG_WRPRTERR| FLASH_FLAG_PGERR
+							| FLASH_FLAG_BSY | FLASH_FLAG_OPTERR);
 		}
 	}
 
@@ -580,8 +576,8 @@ uint8_t io_eeprom_erase(uint32_t address, uint32_t len) {
 
 void internal_flash_unlock() {
 	FLASH_Unlock();
-	FLASH_ClearFlag(FLASH_FLAG_EOP|FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR |
-					FLASH_FLAG_SIZERR | FLASH_FLAG_OPTVERR | FLASH_FLAG_OPTVERRUSR);
+	FLASH_ClearFlag(FLASH_FLAG_EOP| FLASH_FLAG_WRPRTERR| FLASH_FLAG_PGERR
+							| FLASH_FLAG_BSY | FLASH_FLAG_OPTERR);
 }
 
 void internal_flash_lock() {
@@ -613,14 +609,14 @@ uint8_t internal_flash_write_cal(uint32_t address, uint8_t* data, uint32_t len) 
 
 		memcpy(&temp, &data[index], (len - index) >= sizeof(uint32_t) ? sizeof(uint32_t) : (len - index));
 
-		flash_status = FLASH_FastProgramWord(address + index, temp);
+		flash_status = FLASH_ProgramWord(address + index, temp);
 
 		if(flash_status == FLASH_COMPLETE) {
 			index += sizeof(uint32_t);
 		}
 		else {
-			FLASH_ClearFlag(FLASH_FLAG_EOP|FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR |
-							FLASH_FLAG_SIZERR | FLASH_FLAG_OPTVERR | FLASH_FLAG_OPTVERRUSR);
+			FLASH_ClearFlag(FLASH_FLAG_EOP| FLASH_FLAG_WRPRTERR| FLASH_FLAG_PGERR
+							| FLASH_FLAG_BSY | FLASH_FLAG_OPTERR);
 		}
 	}
 
@@ -639,16 +635,14 @@ void io_uart2_cfg() {
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
 	/* Connect PXx to USART2_Tx */
-	GPIO_PinAFConfig(USART2_TX_GPIO_PORT, USART2_TX_SOURCE, USART2_TX_AF);
+	//GPIO_PinAFConfig(USART2_TX_GPIO_PORT, USART2_TX_SOURCE, USART2_TX_AF);
 
 	/* Connect PXx to USART2_Rx */
-	GPIO_PinAFConfig(USART2_RX_GPIO_PORT, USART2_RX_SOURCE, USART2_RX_AF);
+	//GPIO_PinAFConfig(USART2_RX_GPIO_PORT, USART2_RX_SOURCE, USART2_RX_AF);
 
 	/* Configure USART Tx and Rx as alternate function push-pull */
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Pin = USART2_TX_PIN;
 	GPIO_Init(USART2_TX_GPIO_PORT, &GPIO_InitStructure);
 
@@ -713,16 +707,15 @@ void io_uart_rs485_cfg() {
 	RCC_APB1PeriphClockCmd(USART_RS485_CLK, ENABLE);
 
 	/* Connect PXx to USART2_Tx */
-	GPIO_PinAFConfig(USART2_TX_GPIO_PORT, USART2_TX_SOURCE, USART2_TX_AF);
+	//GPIO_PinAFConfig(USART2_TX_GPIO_PORT, USART2_TX_SOURCE, USART2_TX_AF);
 
 	/* Connect PXx to USART2_Rx */
-	GPIO_PinAFConfig(USART2_RX_GPIO_PORT, USART2_RX_SOURCE, USART2_RX_AF);
+	//GPIO_PinAFConfig(USART2_RX_GPIO_PORT, USART2_RX_SOURCE, USART2_RX_AF);
 
 	/* Configure USART Tx and Rx as alternate function push-pull */
-	GPIO_InitStructure.GPIO_Mode	= GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Mode	= GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed	= GPIO_Speed_2MHz;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	
 	GPIO_InitStructure.GPIO_Pin		= USART_RS485_TX_PIN;
 	GPIO_Init(USART_RS485_TX_GPIO_PORT, &GPIO_InitStructure);
 
@@ -745,8 +738,8 @@ void io_rs485_dir_mode_output() {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	RCC_AHBPeriphClockCmd(RS485_DIR_IO_CLOCK, ENABLE);
-	GPIO_InitStructure.GPIO_Mode	= GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType	= GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Mode	= GPIO_Mode_Out_PP;
+
 	GPIO_InitStructure.GPIO_Speed	= GPIO_Speed_2MHz;
 	GPIO_InitStructure.GPIO_Pin		= RS485_DIR_IO_PIN;
 	GPIO_Init(RS485_DIR_IO_PORT, &GPIO_InitStructure);

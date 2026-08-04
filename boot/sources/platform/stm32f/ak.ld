@@ -82,22 +82,39 @@ SECTIONS {
 		_start_ram = . ;
 	} > SRAM
 
-	.data : AT(_end_flash) {
+	.data : AT(_end_flash)
+	{
+		. = ALIGN(4);
+
+		_sdata = .;
 		_data = .;
-		_ldata = LOADADDR (.data);
+
+		_sidata = LOADADDR(.data);
+		_ldata  = LOADADDR(.data);
+
 		*(vtable)
 		*(.data)
 		*(.data*)
 		*(.ram_func)
 		*(.ram_func*)
+
+		. = ALIGN(4);
+
 		_edata = .;
 	} > SRAM
+	.bss :
+	{
+		. = ALIGN(4);
 
-	.bss : {
-		_bss = .;
+		_sbss = .;
+		_bss  = .;
+
 		*(.bss)
 		*(.bss*)
 		*(COMMON)
+
+		. = ALIGN(4);
+
 		_ebss = .;
 	} > SRAM
 
@@ -109,12 +126,12 @@ SECTIONS {
 	} > SRAM
 
 	/* non clear RAM */
-	.non_clear_ram (NOLOAD) : {
+	.non_clear_ram : {
 		_non_clear_ram = .;
 		KEEP (*(.non_clear_ram))
 		KEEP (*(.non_clear_ram*))
 		_enon_clear_ram = .;
-	} > SRAM  
+	} > SRAM
 
 	/* end of SRAM */
 	.end_ram : {

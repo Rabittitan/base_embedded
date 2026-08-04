@@ -1,6 +1,6 @@
 #include "SPI.h"
-#include "stm32l1xx_gpio.h"
-#include "stm32l1xx_rcc.h"
+#include "stm32f10x_gpio.h"
+#include "stm32f10x_rcc.h"
 
 SPIClass::SPIClass(void) {
 	spi_clock = 1000000;
@@ -19,16 +19,15 @@ void SPIClass::io_config() {
 	GPIO_InitTypeDef  GPIO_InitStructure;
 
 	/*!< SPI GPIO Periph clock enable */
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	/*!< SPI Periph clock enable */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 
 	/*!< Configure SPI pins: SCK */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	/*!< Configure SPI pins: MISO */
@@ -40,21 +39,36 @@ void SPIClass::io_config() {
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	/* Connect PXx to SPI_SCK */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
+	GPIO_PinLockConfig(GPIOA, GPIO_PinSource5);
 
 	/* Connect PXx to SPI_MISO */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
+	GPIO_PinLockConfig(GPIOA, GPIO_PinSource6);
 
 	/* Connect PXx to SPI_MOSI */
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
+	GPIO_PinLockConfig(GPIOA, GPIO_PinSource7);
 }
 
 void SPIClass::begin() {
 
 	io_config();
 
+
+	SPI_InitTypeDef SPI_SettingStructure;
+
+    SPI_SettingStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+    SPI_SettingStructure.SPI_Mode = SPI_Mode_Master;                      // Cấu hình mạch làm Master
+    SPI_SettingStructure.SPI_DataSize = SPI_DataSize_8b;                  // Truyền nhận 8-bit
+    SPI_SettingStructure.SPI_CPOL = SPI_CPOL_Low;                         // CPOL = 0
+    SPI_SettingStructure.SPI_CPHA = SPI_CPHA_1Edge;                       // CPHA = 0
+    SPI_SettingStructure.SPI_NSS = SPI_NSS_Soft;                          // Quản lý CS bằng phần mềm
+    SPI_SettingStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;// Bộ chia xung nhịp
+    SPI_SettingStructure.SPI_FirstBit = SPI_FirstBit_MSB;                 // Bit cao đi trước
+    SPI_SettingStructure.SPI_CRCPolynomial = 7;
+
+    /*!< Gọi hàm khởi tạo với struct vừa tạo */
+    SPI_Init(SPI1, &SPI_SettingStructure);
 	/*!< SPI Config */
-	SPI_DeInit(SPI1);
+	//SPI_Init(SPI1, &SPI_Mode );
 	spi_init.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
 	spi_init.SPI_Mode = SPI_Mode_Master;
 	spi_init.SPI_DataSize = SPI_DataSize_8b;

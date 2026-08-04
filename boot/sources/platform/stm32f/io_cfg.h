@@ -31,7 +31,8 @@ extern "C"
 *******************************************************************************/
 #define BUTTON_DOWN_IO_PIN				(GPIO_Pin_3)
 #define BUTTON_DOWN_IO_PORT				(GPIOB)
-#define BUTTON_DOWN_IO_CLOCK			(RCC_AHBPeriph_GPIOB)
+#define BUTTON_DOWN_IO_CLOCK			(RCC_APB2Periph_GPIOB)
+
 
 #define BUTTON_UP_IO_PIN				(GPIO_Pin_13)
 #define BUTTON_UP_IO_PORT				(GPIOC)
@@ -46,14 +47,14 @@ extern "C"
 ******************************************************************************/
 #define LED_LIFE_IO_PIN					(GPIO_Pin_8)
 #define LED_LIFE_IO_PORT				(GPIOB)
-#define LED_LIFE_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
+#define LED_LIFE_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 /*****************************************************************************
  *Pin map buzzer
 ******************************************************************************/
 #define BUZZER_IO_PIN					(GPIO_Pin_0)
 #define BUZZER_IO_PORT					(GPIOB)
-#define BUZZER_IO_CLOCK					(RCC_AHBPeriph_GPIOB)
+#define BUZZER_IO_CLOCK					(RCC_APB2Periph_GPIOB)
 
 // #define BUZZER_IO_AF					(GPIO_AF_TIM3)
 // #define BUZZER_IO_SOURCE				(GPIO_PinSource0)
@@ -67,22 +68,22 @@ extern "C"
 ******************************************************************************/
 #define NRF_CE_IO_PIN					(GPIO_Pin_8)
 #define NRF_CE_IO_PORT					(GPIOA)
-#define NRF_CE_IO_CLOCK					(RCC_AHBPeriph_GPIOA)
+#define NRF_CE_IO_CLOCK					(RCC_APB2Periph_GPIOA)
 
 #define NRF_CSN_IO_PIN					(GPIO_Pin_9)
 #define NRF_CSN_IO_PORT					(GPIOB)
-#define NRF_CSN_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
+#define NRF_CSN_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 #define NRF_IRQ_IO_PIN					(GPIO_Pin_1)
 #define NRF_IRQ_IO_PORT					(GPIOB)
-#define NRF_IRQ_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
+#define NRF_IRQ_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 /*****************************************************************************
  *Pin map Flash W2508
 ******************************************************************************/
 #define FLASH_CE_IO_PIN					(GPIO_Pin_14)
 #define FLASH_CE_IO_PORT				(GPIOB)
-#define FLASH_CE_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
+#define FLASH_CE_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 /****************************************************************************
  *Pin map CT sensor
@@ -91,7 +92,7 @@ extern "C"
 
 #define BAT_ADC_PORT					(GPIOA)
 #define BAT_ADC_CLOCK					(RCC_APB2Periph_ADC1)
-#define BAT_ADC_IO_CLOCK				(RCC_AHBPeriph_GPIOA)
+#define BAT_ADC_IO_CLOCK				(RCC_APB2Periph_GPIOA)
 
 /****************************************************************************
  *Pin map Oled
@@ -102,30 +103,30 @@ extern "C"
 
 #define OLED_CLK_IO_PIN					(GPIO_Pin_13)
 #define OLED_CLK_IO_PORT				(GPIOB)
-#define OLED_CLK_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
+#define OLED_CLK_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 #define OLED_DATA_IO_PIN				(GPIO_Pin_12)
 #define OLED_DATA_IO_PORT				(GPIOB)
-#define OLED_DATA_IO_CLOCK				(RCC_AHBPeriph_GPIOB)
+#define OLED_DATA_IO_CLOCK				(RCC_APB2Periph_GPIOB)
 
 #define OLED_RES_IO_PIN					(GPIO_Pin_15)
 #define OLED_RES_IO_PORT				(GPIOA)
-#define OLED_RES_IO_CLOCK				(RCC_AHBPeriph_GPIOA)
+#define OLED_RES_IO_CLOCK				(RCC_APB2Periph_GPIOA)
 
 /****************************************************************************
  *Pin map UART2
 *****************************************************************************/
 #define USART2_TX_PIN					GPIO_Pin_3
 #define USART2_TX_GPIO_PORT				GPIOA
-#define USART2_TX_GPIO_CLK				RCC_AHBPeriph_GPIOA
+#define USART2_TX_GPIO_CLK				RCC_APB2Periph_GPIOA
 #define USART2_TX_SOURCE				GPIO_PinSource3
-#define USART2_TX_AF					GPIO_AF_USART1
+#define USART2_TX_AF					GPIO_Remap_USART1
 
 #define USART2_RX_PIN					GPIO_Pin_2
 #define USART2_RX_GPIO_PORT				GPIOA
-#define USART2_RX_GPIO_CLK				RCC_AHBPeriph_GPIOA
+#define USART2_RX_GPIO_CLK				RCC_APB2Periph_GPIOA
 #define USART2_RX_SOURCE				GPIO_PinSource2
-#define USART2_RX_AF					GPIO_AF_USART2
+#define USART2_RX_AF					GPIO_Remap_USART2
 
 #define USART2_CLK						RCC_APB1Periph_USART2
 
@@ -138,12 +139,12 @@ extern "C"
 
 #define USART_RS485_TX_PIN				(GPIO_Pin_3)
 #define USART_RS485_TX_GPIO_PORT		(GPIOA)
-#define USART_RS485_TX_GPIO_CLK			(RCC_AHBPeriph_GPIOA)
+#define USART_RS485_TX_GPIO_CLK			(RCC_APB2Periph_GPIOA)
 #define USART_RS485_TX_SOURCE			(GPIO_PinSource3)
 
 #define USART_RS485_RX_PIN				(GPIO_Pin_2)
 #define USART_RS485_RX_GPIO_PORT		(GPIOA)
-#define USART_RS485_RX_GPIO_CLK			(RCC_AHBPeriph_GPIOA)
+#define USART_RS485_RX_GPIO_CLK			(RCC_APB2Periph_GPIOA)
 #define USART_RS485_RX_SOURCE			(GPIO_PinSource2)
 
 #define RS485_TIM						(TIM4)
@@ -153,7 +154,7 @@ extern "C"
 /*RS485 dir IO*/
 #define RS485_DIR_IO_PIN				(GPIO_Pin_1)
 #define RS485_DIR_IO_PORT				(GPIOA)
-#define RS485_DIR_IO_CLOCK				(RCC_AHBPeriph_GPIOA)
+#define RS485_DIR_IO_CLOCK				(RCC_APB2Periph_GPIOA)
 
 /******************************************************************************
 * button function

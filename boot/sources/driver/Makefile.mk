@@ -1,15 +1,13 @@
-CFLAGS   += -I./sources/driver/led
-CFLAGS   += -I./sources/driver/flash
-CFLAGS   += -I./sources/driver/eeprom
+# include sources/driver/Adafruit_oled_drv/Makefile.mk
 
-CPPFLAGS += -I./sources/driver/led
-CPPFLAGS += -I./sources/driver/flash
-CPPFLAGS += -I./sources/driver/eeprom
+# include sources/driver/eeprom/Makefile.mk
+# include sources/driver/flash/Makefile.mk
 
-VPATH += sources/driver/led
-VPATH += sources/driver/eeprom
-VPATH += sources/driver/flash
+# include sources/driver/AsyncDelay/Makefile.mk
+# include sources/driver/gpio/Makefile.mk
+# include sources/driver/buzzer/Makefile.mk
 
-SOURCES += sources/driver/led/led.c
-SOURCES += sources/driver/flash/flash.c
-SOURCES_CPP += sources/driver/eeprom/eeprom.cpp
+
+include sources/driver/led/Makefile.mk
+include sources/driver/button/Makefile.mk
+include sources/driver/flash/Makefile.mk

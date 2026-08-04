@@ -26,9 +26,9 @@
 
 #include "Arduino.h" // for digitalWrite
 
-#include "stm32l1xx.h"
-#include "stm32l1xx_i2c.h"
-#include "stm32l1xx_rcc.h"
+#include "stm32f10x.h"
+#include "stm32f10x_i2c.h"
+#include "stm32f10x_rcc.h"
 
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
@@ -76,8 +76,8 @@ void twi_init(void)
 	GPIO_InitTypeDef  GPIO_InitStructure;
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
 	/* Reset I2C peripheral */
 	RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
@@ -86,16 +86,14 @@ void twi_init(void)
 
 	/*!< GPIO configuration */
 	/* I2C_SCL*/
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_I2C1);
+	GPIO_PinLockConfig(GPIOB, GPIO_PinSource6);
 	/* I2C_SDA*/
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_I2C1);
+	GPIO_PinLockConfig(GPIOB, GPIO_PinSource7);
 
 	/*!< Configure I2C pins: SCL */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	/*!< Configure I2C pins: SDA */

@@ -37,7 +37,7 @@ extern "C"
 extern ring_buffer_char_t ring_buffer_char_shell_send;
 
 extern void sys_cfg_clock();
-extern void sys_cfg_tick();
+extern void sys_cfg_tick(); 
 extern void sys_cfg_console();
 extern void sys_cfg_svc();
 extern void sys_cfg_pendsv();

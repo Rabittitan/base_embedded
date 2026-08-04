@@ -12,7 +12,6 @@ extern "C"
 #define		BUTTON_DRIVER_NG						(0x01)
 
 #define		BUTTON_SHORT_PRESS_MIN_TIME				(20)		/* 20ms */
-#define		BUTTON_SHORT_PRESS_MAX_TIME				(1000)		/* 1s */
 #define		BUTTON_LONG_PRESS_TIME					(2000)		/* 2s */
 
 #define		BUTTON_DISABLE							(0x00)
@@ -22,13 +21,12 @@ extern "C"
  * This define depend on hardware circuit.
  * Note: please change it for respective.
  */
-#define		BUTTON_HW_STATE_PRESS					(0x00)
-#define		BUTTON_HW_STATE_RELEASE					(0x01)
+#define		BUTTON_HW_STATE_PRESSED					(0x00)
+#define		BUTTON_HW_STATE_RELEASED				(0x01)
 
-#define		BUTTON_SW_STATE_RELEASE					(0x00)
-#define		BUTTON_SW_STATE_SHORT_HOLD_PRESS		(0x01)
-#define		BUTTON_SW_STATE_SHORT_RELEASE_PRESS		(0x02)
-#define		BUTTON_SW_STATE_LONG_PRESS				(0x03)
+#define		BUTTON_SW_STATE_PRESSED					(0x00)
+#define		BUTTON_SW_STATE_LONG_PRESSED			(0x01)
+#define		BUTTON_SW_STATE_RELEASED				(0x02)
 
 typedef void (*pf_button_ctrl)();
 typedef uint8_t (*pf_button_read)();

@@ -13,7 +13,9 @@ extern "C" {
 extern uint8_t  eeprom_read(uint32_t, uint8_t*, uint32_t);
 extern uint8_t  eeprom_write(uint32_t, uint8_t*, uint32_t);
 extern uint8_t  eeprom_erase(uint32_t address, uint32_t len);
-
+void DATA_EEPROM_Unlock(void);
+void DATA_EEPROM_Lock(void);
+uint8_t DATA_EEPROM_ProgramByte(uint32_t addr, uint8_t data);
 #ifdef __cplusplus
 }
 #endif

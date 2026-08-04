@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @Author: GaoKong
- * @Date:   12/09/2016
+ * @author: GaoKong
+ * @date:   12/09/2016
  ******************************************************************************
 **/
 #ifndef __SYS_CTRL_H__
@@ -13,13 +13,14 @@ extern "C"
 #endif
 
 #include <stdint.h>
-#include "sys_boot.h"
+#include "app_data.h"
+#include "system.h"
 
+/*****************************************************************************
+ * system utilities function.
+ *****************************************************************************/
 #define SYS_POWER_ON_RESET			0x00
 #define SYS_NON_POWER_ON_RESET		0x01
-#define SYS_CTRL_JUMP_TO_APP_REQ	((uint32_t)0xEFEFEFEF)
-
-extern uint32_t sys_ctrl_jump_to_app_req;
 
 /* reset system (soft reset) */
 extern void sys_ctrl_reset();
@@ -44,21 +45,55 @@ extern void sys_ctrl_delay_ms(volatile uint32_t count);
 /* system delay us, uint this function using CPU delay*/
 extern void sys_ctrl_delay_us(volatile uint32_t count);
 
-/* get current system timer variable */
+/* get current 1ns system timer variable */
+extern uint32_t sys_ctrl_micros();
+
+/* get current 1ms system timer variable */
 extern uint32_t sys_ctrl_millis();
 
 /* get character of system console */
 extern uint8_t sys_ctrl_shell_get_char();
 
-/* console put charactor */
+/* put character of system console (NON-BLOCKING using interrupt) */
 extern void sys_ctrl_shell_put_char(uint8_t);
+
+/* put character of system console (BLOCKING)*/
+extern void sys_ctrl_shell_put_char_block(uint8_t);
+
+/* switch shell put char with blocking */
+extern void sys_ctrl_shell_sw_to_block();
+
+/* switch shell put char with non-blocking */
+extern void sys_ctrl_shell_sw_to_nonblock();
 
 /* get firmware info */
 extern void sys_ctrl_get_firmware_info(firmware_header_t*);
 
-extern uint8_t sys_is_power_on_reset();
+/* goto sleep mode and wait for interrupt */
+extern void sys_ctr_sleep_wait_for_irq();
 
-extern void sys_ctrl_jump_to_app();
+/* get exception number */
+extern uint32_t sys_ctr_get_exception_number();
+
+/* system restart application */
+extern void sys_ctr_restart_app();
+
+/* get vbat voltage */
+extern uint32_t sys_ctr_get_vbat_voltage();
+
+/* get MCU temperature */
+extern uint32_t sys_ctr_get_mcu_temperature();
+
+extern void sys_ctr_stop_mcu();
+
+extern int asm_test_add(int, int);
+
+/*****************************************************************************
+ * system memory function.
+ *****************************************************************************/
+extern uint32_t sys_stack_count_init(); //clean stack, return stack size
+extern uint32_t sys_stack_usage();
+extern uint32_t sys_stack_get_size();
 
 #ifdef __cplusplus
 }

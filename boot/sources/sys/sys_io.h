@@ -7,7 +7,6 @@ extern "C"
 #endif
 
 #include "io_cfg.h"
-#include "stm32l.h"
 
 #ifdef __cplusplus
 }

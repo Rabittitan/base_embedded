@@ -1,3 +1,11 @@
+CFLAGS += -I./sources/platform/stm32f/Libraries/STM32F10x_StdPeriph_Driver/inc
+CPPFLAGS += -I./sources/platform/stm32f/Libraries/STM32F10x_StdPeriph_Driver/inc
+CFLAGS += -I./sources/platform/stm32f/Libraries/CMSIS/CM3/CoreSupport
+CPPFLAGS += -I./sources/platform/stm32f/Libraries/CMSIS/CM3/CoreSupport
+CFLAGS += -I./sources/platform/stm32f/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
+CPPFLAGS += -I./sources/platform/stm32f/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
+
+
 include sources/platform/stm32f/Libraries/STM32F10x_StdPeriph_Driver/Makefile.mk
 include sources/platform/stm32f/Libraries/CMSIS/Makefile.mk
 include sources/platform/stm32f/arduino/Makefile.mk
@@ -17,8 +25,11 @@ SOURCES += sources/platform/stm32f/sys_cfg.c
 SOURCES += sources/platform/stm32f/io_cfg.c
 SOURCES += sources/platform/stm32f/system_stm32f10x.c
 
+
+
 # C++ source files
 SOURCES_CPP += sources/platform/stm32f/mini_cpp.cpp
 
-# ASM source files
-SOURCES_ASM += sources/platform/stm32f/startup_stm32f10x_md.s
+# # ASM source files
+SOURCES_ASM += sources/platform/stm32f/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/arm/startup_stm32f10x_md.s
+

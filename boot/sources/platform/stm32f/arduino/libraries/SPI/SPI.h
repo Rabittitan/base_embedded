@@ -2,8 +2,8 @@
 #define __SPI_H__
 
 #include <stdint.h>
-#include "stm32l1xx.h"
-#include "stm32l1xx_spi.h"
+#include "stm32f10x.h"
+#include "stm32f10x_spi.h"
 
 #define SPI_CLOCK_DIV2      SPI_BaudRatePrescaler_2
 #define SPI_CLOCK_DIV4      SPI_BaudRatePrescaler_4
