@@ -29,14 +29,21 @@ enum {
         AC_TASK_DISPLAY_ID,
         AC_TASK_MPU_ID,
 
+        /*****************************************************************************/
+        /* TASK GAME */
+        /*****************************************************************************/
+
+        TG_CORE_TASK_ID,
 
 
+
+
+        
         AK_TASK_EOT_ID,
-
+      
 
 
 };
-
 
 
 
@@ -68,5 +75,20 @@ extern void task_mpu(ak_msg_t*);
 /*****************************************************************************/
 
 extern void task_polling_console();
+ 
+
+
+/*****************************************************************************/
+/* DECLARE: Task entry point FOR TASK GAME
+ */
+/*****************************************************************************/
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern void task_core_handle(ak_msg_t *msg);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

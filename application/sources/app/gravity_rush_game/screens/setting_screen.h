@@ -10,6 +10,8 @@
 #include    "Wire.h"
 #include    "mpu6050.h"
 
+
+
 extern mpu6050_data_t imu_data;
 
 extern view_dynamic_t dyn_view_data;

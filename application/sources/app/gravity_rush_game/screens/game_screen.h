@@ -4,6 +4,8 @@
 #include "fsm.h"
 #include "message.h"
 #include "task_display.h"
+#include "player.h"
+#include "app.h"
 
 
 extern view_dynamic_t dyn_view_game;

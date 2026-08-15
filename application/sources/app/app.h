@@ -69,6 +69,25 @@ enum {
 	AC_LIFE_SYSTEM_CHECK = AK_USER_DEFINE_SIG,
 };
 
+/*****************************************************************************/
+/*   task game
+ */
+/*****************************************************************************/
+/* define timer */
+
+/* define signal */
+enum {
+	CORE_SETUP_SIG = 1,
+    CORE_UPDATE_SIG,
+    // CORE_MOVE_LEFT_SIG,  
+    // CORE_MOVE_RIGHT_SIG, 
+	// CORE_MOVE_UP_SIG,  
+    // CORE_MOVE_DOWN_SIG, 
+    CORE_RESET_SIG, 
+	CORE_FREEZE_SIG,
+    CORE_ULTIMATE_SIG,
+
+};
 
 
 

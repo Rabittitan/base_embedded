@@ -24,8 +24,12 @@ const task_t app_task_table[] = {
     {AC_TASK_DISPLAY_ID	,TASK_PRI_LEVEL_4,task_display},    
     { AC_TASK_MPU_ID , TASK_PRI_LEVEL_4 , task_mpu },   
 
-    // irp LEVEL
-   // {AC_TASK_GAME_ID,TASK_PRI_LEVEL_3, task_game},
+    /*************************************************************************/
+    /* TASK GAME */
+    /*************************************************************************/
+   { TG_CORE_TASK_ID           ,  TASK_PRI_LEVEL_4    ,  task_core_handle},
+
+
 
     /*************************************************************************/
     /* END OF TABLE */

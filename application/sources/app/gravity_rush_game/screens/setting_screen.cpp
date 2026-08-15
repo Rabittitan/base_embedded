@@ -64,7 +64,9 @@ void scr_data_handle(ak_msg_t *msg) {
     timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
   } break;
 
-  default:
-    
+  default:{
+
+  } break;
+
   }
 }

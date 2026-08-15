@@ -1,5 +1,6 @@
 #include "menu_screen.h"
 #include "setting_screen.h"
+#include "game_screen.h" 
 
 static uint8_t menu_index = 0; 
 // ================ (DRAW)========================
@@ -17,10 +18,9 @@ static void view_scr_menu()
     //  1: START
     view_render.setCursor(90, 30);
     view_render.print("START");
-    
     //  2: TOP SCORE
     view_render.setCursor(90, 42);
-    view_render.print("TOP");
+    view_render.print("TEST");
     
     //  3: EXIT
     view_render.setCursor(90, 54);
@@ -73,7 +73,7 @@ void scr_menu_handle(ak_msg_t* msg){
             if (menu_index == 0) {
                 // START GAME: (scr_game)
               //  SCREEN_TRAN(scr_game_handle, &scr_game); 
-              SCREEN_TRAN(scr_startup_handle, &scr_startup);
+              SCREEN_TRAN(game_screen_handle, &game_screen);
             }
             else if (menu_index == 1) {
                 // goto TOP SCORE 
