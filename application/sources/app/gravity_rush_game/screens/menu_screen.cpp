@@ -9,26 +9,26 @@ static void view_scr_menu()
     
     view_render.fillRect(0,0,130,65,BLACK); // clear screen
     // draw 124x60 bitmap 
-    view_render.drawBitmap(0, 0, bitmap_banner_game, 124, 60, WHITE);
+    //view_render.drawBitmap(0, 0, bitmap_banner_game, 124, 60, WHITE);
 
 
     // draw Menu
     view_render.setTextSize(1);
     
-    //  1: START
-    view_render.setCursor(90, 30);
+    //  1: STARTS
+    view_render.setCursor(50, 25);
     view_render.print("START");
     //  2: TOP SCORE
-    view_render.setCursor(90, 42);
+    view_render.setCursor(50, 37);
     view_render.print("TEST");
     
     //  3: EXIT
-    view_render.setCursor(90, 54);
+    view_render.setCursor(50, 49);
     view_render.print("EXIT");
 
     // (Cursor) on menu_index '>'
-    int8_t cursor_y = 30 + (menu_index * 12); 
-    view_render.setCursor(80, cursor_y);
+    int8_t cursor_y = 25 + (menu_index * 12); 
+    view_render.setCursor(40, cursor_y);
     view_render.print(">");
     
 };
@@ -61,11 +61,11 @@ void scr_menu_handle(ak_msg_t* msg){
             BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 
             // CLEAR ALL TIMER UPDATE 
-            timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_TANK_MOVING_UPDATE);
+            timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_CORE_MOVING_UPDATE);
             break;
 
        
-        case AC_DISPLAY_SHOW_TANK_MOVING_UPDATE:
+        case AC_DISPLAY_SHOW_CORE_MOVING_UPDATE:
         //     break;
 
         //when button "MODE" released

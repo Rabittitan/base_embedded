@@ -37,7 +37,7 @@ typedef struct core_t {
 
   /* Gameplay */
   uint8_t hp;
-  uint32_t score;
+
   uint8_t combo;
   uint8_t ultimate;
 

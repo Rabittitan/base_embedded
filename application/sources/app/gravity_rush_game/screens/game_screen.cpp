@@ -29,13 +29,13 @@ void game_screen_handle(ak_msg_t *msg)
         APP_DBG(">> step1 !\n");
         task_post_pure_msg(TG_CORE_TASK_ID,CORE_SETUP_SIG);
         APP_DBG(">> step2 !\n");
-        timer_set(AC_TASK_DISPLAY_ID , AC_DISPLAY_SHOW_TANK_MOVING_UPDATE, 60, TIMER_PERIODIC);
+        timer_set(AC_TASK_DISPLAY_ID , AC_DISPLAY_SHOW_CORE_MOVING_UPDATE, 60, TIMER_PERIODIC);
     
     } break;
     
-    case AC_DISPLAY_SHOW_TANK_MOVING_UPDATE:{
+    case AC_DISPLAY_SHOW_CORE_MOVING_UPDATE:{
+       // task_post_pure_msg(TG_CORE_TASK_ID,CORE_SETUP_SIG);
         task_post_pure_msg(TG_CORE_TASK_ID,CORE_UPDATE_SIG);
-
 
     }break;
 

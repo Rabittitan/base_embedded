@@ -11,3 +11,7 @@ load
 
 
 compare-sections
+
+
+//use uart debug
+screen /dev/ttyACM0 115200

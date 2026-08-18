@@ -27,7 +27,7 @@ void task_mpu(ak_msg_t* msg){
 
         case AC_MPU6050_UPDATE:
         {
-            mpu6050_get_data(&imu_data);
+            //mpu6050_get_data(&imu_data);
 
             bool ret = mpu6050_get_data(&imu_data);
 

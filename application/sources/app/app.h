@@ -79,10 +79,6 @@ enum {
 enum {
 	CORE_SETUP_SIG = 1,
     CORE_UPDATE_SIG,
-    // CORE_MOVE_LEFT_SIG,  
-    // CORE_MOVE_RIGHT_SIG, 
-	// CORE_MOVE_UP_SIG,  
-    // CORE_MOVE_DOWN_SIG, 
     CORE_RESET_SIG, 
 	CORE_FREEZE_SIG,
     CORE_ULTIMATE_SIG,
@@ -185,7 +181,7 @@ enum {
 	AC_DISPLAY_SHOW_MODBUS_PULL_UPDATE,
 	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP,
 	//button 
-	AC_DISPLAY_SHOW_TANK_MOVING_UPDATE
+	AC_DISPLAY_SHOW_CORE_MOVING_UPDATE
 };
 
 /*****************************************************************************/
