@@ -403,6 +403,8 @@ void sys_irq_timer_10ms() {
 	button_timer_polling(&btn_mode);
 	button_timer_polling(&btn_up);
 	button_timer_polling(&btn_down);
+
+	//mpu6050_timestamp_update();
 }
 
 /* init non-clear RAM objects

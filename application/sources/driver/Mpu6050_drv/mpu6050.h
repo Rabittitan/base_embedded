@@ -32,5 +32,7 @@ typedef struct
 bool mpu6050_init(void);
 
 bool mpu6050_get_data(mpu6050_data_t* data);
-
+void mpu6050_timestamp_update(void);
+float mpu6050_get_game_control_x(void);
+float mpu6050_get_game_control_y(void);
 #endif

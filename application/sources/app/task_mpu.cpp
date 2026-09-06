@@ -35,7 +35,42 @@ void task_mpu(ak_msg_t* msg){
             {
                 APP_DBG("MPU Read Failed\n");
             }
+
+
+            
+            // Lấy tín hiệu điều khiển game
+            float control_x = mpu6050_get_game_control_x();  // -1.0 đến 1.0
+            float control_y = mpu6050_get_game_control_y();  // -1.0 đến 1.0
+            
+
+            APP_DBG("dataa x: %.2f | y: %.2f\n", control_x, control_y);
+
+            // Áp dụng vào game
+            if (control_x > 0.1f) {
+                // Di chuyển nhân vật sang phải
+                // game_move_right(control_x);
+            } else if (control_x < -0.1f) {
+                // Di chuyển nhân vật sang trái
+                // game_move_left(-control_x);
+            }
+            
+            if (control_y > 0.1f) {
+                // Di chuyển nhân vật lên
+                // game_move_up(control_y);
+            } else if (control_y < -0.1f) {
+                // Di chuyển nhân vật xuống
+                // game_move_down(-control_y);
+            }
+
+
+           // sys_ctrl_delay_ms(500);
+
         }
         break;
+
+
+
+
+    
     }
 }

@@ -8,8 +8,8 @@ typedef struct  core_t core_t;
 
 typedef struct physics_t
 {
-    int ax;
-    int ay;
+    float ax;
+    float ay;
 
 
 }physics_t;

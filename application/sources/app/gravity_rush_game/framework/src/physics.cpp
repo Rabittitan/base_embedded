@@ -4,7 +4,7 @@
 
 #define CORE_ACCEL_SCALE    0.15f
 #define CORE_FRICTION       0.90f
-#define CORE_MAX_SPEED      3.0f
+#define CORE_MAX_SPEED      0.1f
 
 void physics_update(core_t *core, physics_t *physics)
 {
@@ -28,4 +28,7 @@ void physics_update(core_t *core, physics_t *physics)
 
     core->x += core->vx;
     core->y += core->vy;
+
+
+    
 }

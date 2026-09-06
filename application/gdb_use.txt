@@ -15,3 +15,6 @@ compare-sections
 
 //use uart debug
 screen /dev/ttyACM0 115200
+
+ls /dev/ttyUSB* /dev/ttyACM* 2>/dev/null
+

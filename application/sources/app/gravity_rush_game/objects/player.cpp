@@ -56,6 +56,13 @@ void task_core_handle(struct ak_msg_t *msg) {
         (int)(static_core.x * 100),
         (int)(imu_data.acc_x )
       );
+
+    APP_DBG("ay=%d vy=%d x=%d  acc_y=%d\n",
+        (int)(static_physics.ay * 100),
+        (int)(static_core.vy * 100),
+        (int)(static_core.y * 100),
+        (int)(imu_data.acc_y )
+      );
   } break;
 
   case CORE_RESET_SIG: {
